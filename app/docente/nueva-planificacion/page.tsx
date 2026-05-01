@@ -273,25 +273,40 @@ export default function NuevaPlanificacion() {
           <h2 className="text-2xl font-bold mb-10">Docente</h2>
 
           <nav className="flex flex-col gap-3">
-            <Link href="/docente" className="hover:bg-[#144d74] px-4 py-2 rounded-lg">
+            <Link
+              href="/docente"
+              className="hover:bg-[#144d74] px-4 py-2 rounded-lg"
+            >
               Panel
             </Link>
 
-            <Link href="/docente/nueva-planificacion" className="bg-[#144d74] px-4 py-2 rounded-lg font-semibold">
+            <Link
+              href="/docente/nueva-planificacion"
+              className="bg-[#144d74] px-4 py-2 rounded-lg font-semibold"
+            >
               Nueva planificación
             </Link>
 
-            <Link href="/docente/mis-planificaciones" className="hover:bg-[#144d74] px-4 py-2 rounded-lg">
+            <Link
+              href="/docente/mis-planificaciones"
+              className="hover:bg-[#144d74] px-4 py-2 rounded-lg"
+            >
               Mis planificaciones
             </Link>
 
-            <Link href="/docente/biblioteca" className="hover:bg-[#144d74] px-4 py-2 rounded-lg">
+            <Link
+              href="/docente/biblioteca"
+              className="hover:bg-[#144d74] px-4 py-2 rounded-lg"
+            >
               Biblioteca curricular
             </Link>
           </nav>
         </div>
 
-        <button onClick={cerrarSesion} className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg font-bold">
+        <button
+          onClick={cerrarSesion}
+          className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-lg font-bold"
+        >
           Cerrar sesión
         </button>
       </aside>
@@ -304,11 +319,15 @@ export default function NuevaPlanificacion() {
                 Planificación de Unidad
               </h1>
               <p className="text-gray-700 mt-2">
-                El nombre del docente y el centro se cargan desde el perfil autorizado.
+                El nombre del docente y el centro se cargan desde el perfil
+                autorizado.
               </p>
             </div>
 
-            <Link href="/docente" className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg font-semibold">
+            <Link
+              href="/docente"
+              className="bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg font-semibold"
+            >
               ← Volver
             </Link>
           </div>
@@ -334,7 +353,11 @@ export default function NuevaPlanificacion() {
               className="border p-3 rounded-lg bg-gray-100 cursor-not-allowed"
             />
 
-            <select value={regional} onChange={(e) => setRegional(e.target.value)} className="border p-3 rounded-lg">
+            <select
+              value={regional}
+              onChange={(e) => setRegional(e.target.value)}
+              className="border p-3 rounded-lg"
+            >
               <option value="">Regional</option>
               {[...Array(18)].map((_, i) => (
                 <option key={i} value={String(i + 1)}>
@@ -343,7 +366,11 @@ export default function NuevaPlanificacion() {
               ))}
             </select>
 
-            <select value={distrito} onChange={(e) => setDistrito(e.target.value)} className="border p-3 rounded-lg">
+            <select
+              value={distrito}
+              onChange={(e) => setDistrito(e.target.value)}
+              className="border p-3 rounded-lg"
+            >
               <option value="">Distrito</option>
               {[...Array(10)].map((_, i) => (
                 <option key={i} value={String(i + 1)}>
@@ -352,7 +379,12 @@ export default function NuevaPlanificacion() {
               ))}
             </select>
 
-            <input value={codigoDistrito} readOnly placeholder="Código distrito" className="border p-3 rounded-lg bg-gray-100" />
+            <input
+              value={codigoDistrito}
+              readOnly
+              placeholder="Código distrito"
+              className="border p-3 rounded-lg bg-gray-100"
+            />
 
             <select
               value={nivel}
@@ -379,7 +411,9 @@ export default function NuevaPlanificacion() {
               className="border p-3 rounded-lg"
               disabled={!nivel}
             >
-              <option value="">{nivel ? "Grado" : "Primero selecciona un nivel"}</option>
+              <option value="">
+                {nivel ? "Grado" : "Primero selecciona un nivel"}
+              </option>
               {[1, 2, 3, 4, 5, 6].map((g) => (
                 <option key={g} value={String(g)}>
                   {g}°
@@ -387,7 +421,11 @@ export default function NuevaPlanificacion() {
               ))}
             </select>
 
-            <select value={periodo} onChange={(e) => setPeriodo(e.target.value)} className="border p-3 rounded-lg">
+            <select
+              value={periodo}
+              onChange={(e) => setPeriodo(e.target.value)}
+              className="border p-3 rounded-lg"
+            >
               <option value="">Período</option>
               {[1, 2, 3, 4].map((p) => (
                 <option key={p} value={String(p)}>
@@ -396,13 +434,25 @@ export default function NuevaPlanificacion() {
               ))}
             </select>
 
-            <input value={tiempoAsignado} onChange={(e) => setTiempoAsignado(e.target.value)} placeholder="Tiempo asignado (Ej: 1 mes)" className="border p-3 rounded-lg" />
+            <input
+              value={tiempoAsignado}
+              onChange={(e) => setTiempoAsignado(e.target.value)}
+              placeholder="Tiempo asignado (Ej: 1 mes)"
+              className="border p-3 rounded-lg"
+            />
 
-            <input value={fecha} onChange={(e) => setFecha(e.target.value)} placeholder="Fecha (Ej: abril-mayo)" className="border p-3 rounded-lg" />
+            <input
+              value={fecha}
+              onChange={(e) => setFecha(e.target.value)}
+              placeholder="Fecha (Ej: abril-mayo)"
+              className="border p-3 rounded-lg"
+            />
           </div>
 
           <div className="mb-6">
-            <label className="font-semibold text-[#1E6091]">Unidad didáctica</label>
+            <label className="font-semibold text-[#1E6091]">
+              Unidad didáctica
+            </label>
 
             <select
               value={unidadSeleccionada}
@@ -411,7 +461,12 @@ export default function NuevaPlanificacion() {
                 setSituacion("");
               }}
               className="w-full border p-3 rounded-lg mt-2"
-              disabled={!nivel || !grado || cargandoUnidades || unidadesDelGrado.length === 0}
+              disabled={
+                !nivel ||
+                !grado ||
+                cargandoUnidades ||
+                unidadesDelGrado.length === 0
+              }
             >
               <option value="">
                 {!nivel
@@ -434,169 +489,187 @@ export default function NuevaPlanificacion() {
           </div>
 
           {unidadData && (
-  <div className="mb-8 border border-gray-200 rounded-2xl overflow-hidden bg-white">
-    <div className="bg-[#1E6091] text-white px-6 py-4">
-      <h2 className="text-xl font-bold">Aspectos curriculares de la unidad</h2>
-      <p className="text-sm text-white/80 mt-1">
-        Información cargada desde la biblioteca curricular.
-      </p>
-    </div>
-
-    <div className="p-6 grid gap-5">
-      <div>
-        <h3 className="font-bold text-[#1E6091] mb-2">Unidad</h3>
-        <p className="text-gray-700">{unidadData.titulo}</p>
-      </div>
-
-      <div>
-        <h3 className="font-bold text-[#1E6091] mb-2">Eje transversal</h3>
-        <p className="text-gray-700">{unidadData.eje_transversal}</p>
-      </div>
-
-      <div>
-        <h3 className="font-bold text-[#1E6091] mb-2">Estrategias</h3>
-        <p className="text-gray-700">{unidadData.estrategias}</p>
-      </div>
-
-      <div>
-        <h3 className="font-bold text-[#1E6091] mb-2">
-          Competencias específicas
-        </h3>
-        <p className="text-gray-700 whitespace-pre-line">
-          {unidadData.competencias_especificas}
-        </p>
-      </div>
-
-      <div>
-        <h3 className="font-bold text-[#1E6091] mb-2">
-          Grupos de competencias
-        </h3>
-
-        <ul className="list-disc ml-6 text-gray-700">
-          {(Array.isArray(unidadData.grupos_competencias)
-            ? unidadData.grupos_competencias
-            : []
-          ).map((grupo: string, index: number) => (
-            <li key={index}>{grupo}</li>
-          ))}
-        </ul>
-      </div>
-
-      <div>
-        <h3 className="font-bold text-[#1E6091] mb-2">
-          Áreas articuladas
-        </h3>
-
-        <ul className="list-disc ml-6 text-gray-700">
-          {(Array.isArray(unidadData.areas_articuladas)
-            ? unidadData.areas_articuladas
-            : []
-          ).map((area: string, index: number) => (
-            <li key={index}>{area}</li>
-          ))}
-        </ul>
-      </div>
-
-      <div>
-        <h3 className="font-bold text-[#1E6091] mb-3">
-          Contenidos curriculares
-        </h3>
-
-        <div className="grid md:grid-cols-3 gap-4">
-          <div className="border rounded-xl p-4 bg-gray-50">
-            <h4 className="font-bold text-gray-800 mb-2">Conceptual</h4>
-            <p className="text-gray-700 text-sm">
-              {unidadData.contenidos_conceptuales}
-            </p>
-          </div>
-
-          <div className="border rounded-xl p-4 bg-gray-50">
-            <h4 className="font-bold text-gray-800 mb-2">Procedimental</h4>
-            <p className="text-gray-700 text-sm">
-              {unidadData.contenidos_procedimentales}
-            </p>
-          </div>
-
-          <div className="border rounded-xl p-4 bg-gray-50">
-            <h4 className="font-bold text-gray-800 mb-2">Actitudinal</h4>
-            <p className="text-gray-700 text-sm">
-              {unidadData.contenidos_actitudinales}
-            </p>
-          </div>
-        </div>
-      </div>
-
-      <div>
-        <h3 className="font-bold text-[#1E6091] mb-2">
-          Indicadores de logro
-        </h3>
-        <p className="text-gray-700 whitespace-pre-line">
-          {unidadData.indicadores_logro}
-        </p>
-      </div>
-
-      <div>
-        <h3 className="font-bold text-[#1E6091] mb-3">
-          Secuencias y actividades
-        </h3>
-
-        {secuenciasUnidad.length === 0 ? (
-          <p className="text-gray-500">
-            Esta unidad no tiene secuencias registradas.
-          </p>
-        ) : (
-          <div className="grid gap-4">
-            {secuenciasUnidad.map((secuencia: any, index: number) => (
-              <div key={index} className="border rounded-xl overflow-hidden">
-                <div className="bg-blue-50 px-4 py-3 font-bold text-[#1E6091]">
-                  Secuencia {index + 1}: {secuencia.nombre}
-                </div>
-
-                <ul className="list-disc ml-8 py-4 pr-4 text-gray-700">
-                  {(secuencia.actividades || []).map(
-                    (actividad: string, i: number) => (
-                      <li key={i}>{actividad}</li>
-                    )
-                  )}
-                </ul>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
-  </div>
-)}
-
-          <div className="mb-8 border border-[#BFDCEB] rounded-2xl p-6 bg-[#EAF4FB]">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
-              <div>
-                <h2 className="text-xl font-bold text-[#1E6091]">
-                  Situación de aprendizaje
+            <div className="mb-8 border border-gray-200 rounded-2xl overflow-hidden bg-white">
+              <div className="bg-[#1E6091] text-white px-6 py-4">
+                <h2 className="text-xl font-bold">
+                  Aspectos curriculares de la unidad
                 </h2>
-                <p className="text-sm text-gray-700 mt-1">
-                  Puedes generarla con IA pedagógica y editarla antes de guardar.
+                <p className="text-sm text-white/80 mt-1">
+                  Información cargada desde la biblioteca curricular.
                 </p>
               </div>
 
-              <button
-                type="button"
-                onClick={generarSituacionConIA}
-                disabled={!unidadData || generandoSituacion}
-                className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white px-5 py-3 rounded-lg font-bold"
-              >
-                {generandoSituacion ? "Generando..." : "Generar con IA"}
-              </button>
-            </div>
+              <div className="p-6 grid gap-5">
+                <div>
+                  <h3 className="font-bold text-[#1E6091] mb-2">Unidad</h3>
+                  <p className="text-gray-700">{unidadData.titulo}</p>
+                </div>
 
-            <textarea
-              value={situacion}
-              onChange={(e) => setSituacion(e.target.value)}
-              rows={8}
-              className="w-full border p-4 rounded-lg bg-white"
-              placeholder="Puedes redactar manualmente o generar una situación con IA..."
-            />
-          </div>
+                <div>
+                  <h3 className="font-bold text-[#1E6091] mb-2">
+                    Eje transversal
+                  </h3>
+                  <p className="text-gray-700">
+                    {unidadData.eje_transversal}
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-[#1E6091] mb-2">
+                    Estrategias
+                  </h3>
+                  <p className="text-gray-700">{unidadData.estrategias}</p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-[#1E6091] mb-2">
+                    Competencias específicas
+                  </h3>
+                  <p className="text-gray-700 whitespace-pre-line">
+                    {unidadData.competencias_especificas}
+                  </p>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-[#1E6091] mb-2">
+                    Grupos de competencias
+                  </h3>
+
+                  <ul className="list-disc ml-6 text-gray-700">
+                    {(Array.isArray(unidadData.grupos_competencias)
+                      ? unidadData.grupos_competencias
+                      : []
+                    ).map((grupo: string, index: number) => (
+                      <li key={index}>{grupo}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-[#1E6091] mb-2">
+                    Áreas articuladas
+                  </h3>
+
+                  <ul className="list-disc ml-6 text-gray-700">
+                    {(Array.isArray(unidadData.areas_articuladas)
+                      ? unidadData.areas_articuladas
+                      : []
+                    ).map((area: string, index: number) => (
+                      <li key={index}>{area}</li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-[#1E6091] mb-3">
+                    Contenidos curriculares
+                  </h3>
+
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="border rounded-xl p-4 bg-gray-50">
+                      <h4 className="font-bold text-gray-800 mb-2">
+                        Conceptual
+                      </h4>
+                      <p className="text-gray-700 text-sm">
+                        {unidadData.contenidos_conceptuales}
+                      </p>
+                    </div>
+
+                    <div className="border rounded-xl p-4 bg-gray-50">
+                      <h4 className="font-bold text-gray-800 mb-2">
+                        Procedimental
+                      </h4>
+                      <p className="text-gray-700 text-sm">
+                        {unidadData.contenidos_procedimentales}
+                      </p>
+                    </div>
+
+                    <div className="border rounded-xl p-4 bg-gray-50">
+                      <h4 className="font-bold text-gray-800 mb-2">
+                        Actitudinal
+                      </h4>
+                      <p className="text-gray-700 text-sm">
+                        {unidadData.contenidos_actitudinales}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-[#1E6091] mb-2">
+                    Indicadores de logro
+                  </h3>
+                  <p className="text-gray-700 whitespace-pre-line">
+                    {unidadData.indicadores_logro}
+                  </p>
+                </div>
+
+                <div className="border border-[#BFDCEB] rounded-2xl p-6 bg-[#EAF4FB]">
+                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                    <div>
+                      <h2 className="text-xl font-bold text-[#1E6091]">
+                        Situación de aprendizaje
+                      </h2>
+                      <p className="text-sm text-gray-700 mt-1">
+                        Puedes generarla con IA pedagógica y editarla antes de
+                        guardar.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={generarSituacionConIA}
+                      disabled={!unidadData || generandoSituacion}
+                      className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white px-5 py-3 rounded-lg font-bold"
+                    >
+                      {generandoSituacion ? "Generando..." : "Generar con IA"}
+                    </button>
+                  </div>
+
+                  <textarea
+                    value={situacion}
+                    onChange={(e) => setSituacion(e.target.value)}
+                    rows={8}
+                    className="w-full border p-4 rounded-lg bg-white"
+                    placeholder="Puedes redactar manualmente o generar una situación con IA..."
+                  />
+                </div>
+
+                <div>
+                  <h3 className="font-bold text-[#1E6091] mb-3">
+                    Secuencias y actividades
+                  </h3>
+
+                  {secuenciasUnidad.length === 0 ? (
+                    <p className="text-gray-500">
+                      Esta unidad no tiene secuencias registradas.
+                    </p>
+                  ) : (
+                    <div className="grid gap-4">
+                      {secuenciasUnidad.map((secuencia: any, index: number) => (
+                        <div
+                          key={index}
+                          className="border rounded-xl overflow-hidden"
+                        >
+                          <div className="bg-blue-50 px-4 py-3 font-bold text-[#1E6091]">
+                            Secuencia {index + 1}: {secuencia.nombre}
+                          </div>
+
+                          <ul className="list-disc ml-8 py-4 pr-4 text-gray-700">
+                            {(secuencia.actividades || []).map(
+                              (actividad: string, i: number) => (
+                                <li key={i}>{actividad}</li>
+                              )
+                            )}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           <div className="flex flex-wrap gap-4 mt-6">
             <button
@@ -606,7 +679,10 @@ export default function NuevaPlanificacion() {
               Guardar planificación
             </button>
 
-            <Link href="/docente" className="bg-gray-300 hover:bg-gray-400 text-black px-6 py-3 rounded-lg font-bold">
+            <Link
+              href="/docente"
+              className="bg-gray-300 hover:bg-gray-400 text-black px-6 py-3 rounded-lg font-bold"
+            >
               ← Volver
             </Link>
           </div>
