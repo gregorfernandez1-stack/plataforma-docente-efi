@@ -7,12 +7,22 @@ export async function POST(req: Request) {
     const { id } = body;
 
     if (!id) {
-      return NextResponse.json({ error: "Falta el ID de la solicitud" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Falta el ID de la solicitud" },
+        { status: 400 }
+      );
     }
+
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 
     const supabaseAdmin = createClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const supabaseEmail = createClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
     // Buscar solicitud
@@ -62,9 +72,29 @@ export async function POST(req: Request) {
       );
     }
 
+    // Enviar correo de acceso al docente aprobado
+    const { error: emailError } = await supabaseEmail.auth.signInWithOtp({
+      email: solicitud.correo,
+      options: {
+        emailRedirectTo: `${siteUrl}/docente`,
+      },
+    });
+
+    if (emailError) {
+      return NextResponse.json(
+        {
+          error:
+            "El docente fue aprobado, pero no se pudo enviar el correo de notificación: " +
+            emailError.message,
+        },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json({
       ok: true,
-      message: "Docente aprobado correctamente.",
+      message:
+        "Docente aprobado correctamente. Se envió un correo de acceso al docente.",
     });
   } catch (err: any) {
     return NextResponse.json(

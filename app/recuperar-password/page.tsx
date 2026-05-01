@@ -32,7 +32,7 @@ export default function RecuperarPassword() {
 
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(correo, {
-        redirectTo: "http://localhost:3000/actualizar-password",
+        redirectTo: "https://tuplanefi.com/actualizar-password",
       });
 
       if (error) {
