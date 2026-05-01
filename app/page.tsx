@@ -7,23 +7,27 @@ export default function Home() {
       <div className="absolute top-[-100px] left-[-100px] w-[300px] h-[300px] bg-[#1E6091]/15 rounded-full blur-3xl" />
 
       <section className="relative max-w-7xl mx-auto px-6 md:px-10 py-8 md:py-10">
-        <header className="flex flex-col md:flex-row justify-between items-center gap-5 mb-10 md:mb-14">
-          <div className="flex items-center gap-4 bg-white px-5 py-3 rounded-2xl shadow-sm border border-gray-200">
-            <img src="/logos/inefi.png" alt="INEFI" className="h-12 md:h-14 object-contain" />
-            <img src="/logos/minerd.png" alt="MINERD" className="h-12 md:h-14 object-contain" />
+        
+        {/* HEADER SOLO CON LOGOS */}
+        <header className="flex justify-start mb-10 md:mb-14">
+          <div className="flex items-center gap-6 bg-white px-6 py-4 rounded-2xl shadow-sm border border-gray-200">
+            <img
+              src="/logos/inefi.png"
+              alt="INEFI"
+              className="h-16 md:h-20 object-contain"
+            />
+            <img
+              src="/logos/minerd.png"
+              alt="MINERD"
+              className="h-16 md:h-20 object-contain"
+            />
           </div>
-
-          <span className="bg-white/70 border border-[#BFDCEB] text-[#1E6091] px-5 py-2 rounded-full text-sm font-bold">
-            Plataforma educativa institucional
-          </span>
         </header>
 
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
+          
+          {/* TEXTO PRINCIPAL */}
           <div>
-            <span className="inline-block bg-[#8FD14F] text-[#003B7A] px-5 py-2 rounded-full font-bold mb-5">
-              Educación Física
-            </span>
-
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.08] mb-6 max-w-3xl">
               Plataforma de planificación docente en Educación Física
             </h1>
@@ -50,6 +54,7 @@ export default function Home() {
             </div>
           </div>
 
+          {/* TARJETAS */}
           <div className="grid gap-5">
             <div className="bg-white border border-gray-200 rounded-3xl p-7 shadow-sm">
               <h2 className="text-3xl font-black text-[#1E6091] mb-3">
@@ -87,6 +92,7 @@ export default function Home() {
               </div>
             </div>
           </div>
+
         </div>
       </section>
     </main>
