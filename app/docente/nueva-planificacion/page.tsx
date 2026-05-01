@@ -433,6 +433,141 @@ export default function NuevaPlanificacion() {
             </select>
           </div>
 
+          {unidadData && (
+  <div className="mb-8 border border-gray-200 rounded-2xl overflow-hidden bg-white">
+    <div className="bg-[#1E6091] text-white px-6 py-4">
+      <h2 className="text-xl font-bold">Aspectos curriculares de la unidad</h2>
+      <p className="text-sm text-white/80 mt-1">
+        Información cargada desde la biblioteca curricular.
+      </p>
+    </div>
+
+    <div className="p-6 grid gap-5">
+      <div>
+        <h3 className="font-bold text-[#1E6091] mb-2">Unidad</h3>
+        <p className="text-gray-700">{unidadData.titulo}</p>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-[#1E6091] mb-2">Eje transversal</h3>
+        <p className="text-gray-700">{unidadData.eje_transversal}</p>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-[#1E6091] mb-2">Estrategias</h3>
+        <p className="text-gray-700">{unidadData.estrategias}</p>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-[#1E6091] mb-2">
+          Competencias específicas
+        </h3>
+        <p className="text-gray-700 whitespace-pre-line">
+          {unidadData.competencias_especificas}
+        </p>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-[#1E6091] mb-2">
+          Grupos de competencias
+        </h3>
+
+        <ul className="list-disc ml-6 text-gray-700">
+          {(Array.isArray(unidadData.grupos_competencias)
+            ? unidadData.grupos_competencias
+            : []
+          ).map((grupo: string, index: number) => (
+            <li key={index}>{grupo}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-[#1E6091] mb-2">
+          Áreas articuladas
+        </h3>
+
+        <ul className="list-disc ml-6 text-gray-700">
+          {(Array.isArray(unidadData.areas_articuladas)
+            ? unidadData.areas_articuladas
+            : []
+          ).map((area: string, index: number) => (
+            <li key={index}>{area}</li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-[#1E6091] mb-3">
+          Contenidos curriculares
+        </h3>
+
+        <div className="grid md:grid-cols-3 gap-4">
+          <div className="border rounded-xl p-4 bg-gray-50">
+            <h4 className="font-bold text-gray-800 mb-2">Conceptual</h4>
+            <p className="text-gray-700 text-sm">
+              {unidadData.contenidos_conceptuales}
+            </p>
+          </div>
+
+          <div className="border rounded-xl p-4 bg-gray-50">
+            <h4 className="font-bold text-gray-800 mb-2">Procedimental</h4>
+            <p className="text-gray-700 text-sm">
+              {unidadData.contenidos_procedimentales}
+            </p>
+          </div>
+
+          <div className="border rounded-xl p-4 bg-gray-50">
+            <h4 className="font-bold text-gray-800 mb-2">Actitudinal</h4>
+            <p className="text-gray-700 text-sm">
+              {unidadData.contenidos_actitudinales}
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-[#1E6091] mb-2">
+          Indicadores de logro
+        </h3>
+        <p className="text-gray-700 whitespace-pre-line">
+          {unidadData.indicadores_logro}
+        </p>
+      </div>
+
+      <div>
+        <h3 className="font-bold text-[#1E6091] mb-3">
+          Secuencias y actividades
+        </h3>
+
+        {secuenciasUnidad.length === 0 ? (
+          <p className="text-gray-500">
+            Esta unidad no tiene secuencias registradas.
+          </p>
+        ) : (
+          <div className="grid gap-4">
+            {secuenciasUnidad.map((secuencia: any, index: number) => (
+              <div key={index} className="border rounded-xl overflow-hidden">
+                <div className="bg-blue-50 px-4 py-3 font-bold text-[#1E6091]">
+                  Secuencia {index + 1}: {secuencia.nombre}
+                </div>
+
+                <ul className="list-disc ml-8 py-4 pr-4 text-gray-700">
+                  {(secuencia.actividades || []).map(
+                    (actividad: string, i: number) => (
+                      <li key={i}>{actividad}</li>
+                    )
+                  )}
+                </ul>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </div>
+)}
+
           <div className="mb-8 border border-[#BFDCEB] rounded-2xl p-6 bg-[#EAF4FB]">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
               <div>
