@@ -16,9 +16,9 @@ export async function POST(req: Request) {
       contenidos,
     } = body;
 
-    if (!process.env.OPENAI_API_KEY) {
+    if (!process.env.GEMINI_API_KEY) {
       return NextResponse.json(
-        { error: "Falta configurar OPENAI_API_KEY en Vercel." },
+        { error: "Falta configurar GEMINI_API_KEY en Vercel." },
         { status: 500 }
       );
     }
@@ -41,52 +41,48 @@ Contenidos conceptuales: ${contenidos?.conceptual || "No especificados"}
 Contenidos procedimentales: ${contenidos?.procedimental || "No especificados"}
 Contenidos actitudinales: ${contenidos?.actitudinal || "No especificados"}
 
-Debe ser un solo párrafo claro, contextualizado, pedagógico y completo.
+Debe ser un solo párrafo claro, pedagógico, contextualizado y coherente.
 `;
 
     const response = await fetch(
-      "https://api.openai.com/v1/chat/completions",
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,
       {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [
+          contents: [
             {
-              role: "user",
-              content: prompt,
+              parts: [{ text: prompt }],
             },
           ],
-          temperature: 0.7,
         }),
       }
     );
 
     const data = await response.json();
 
-    // 🔴 LOG PARA DEBUG
-    console.log("Respuesta OpenAI:", data);
+    console.log("Respuesta Gemini:", data);
 
     if (!response.ok) {
       return NextResponse.json(
         {
           error:
             data.error?.message ||
-            "Error al comunicarse con OpenAI.",
+            "Gemini no pudo generar la situación.",
         },
         { status: 500 }
       );
     }
 
-    const texto = data?.choices?.[0]?.message?.content;
+    const texto =
+      data?.candidates?.[0]?.content?.parts?.[0]?.text;
 
     if (!texto) {
       return NextResponse.json(
         {
-          error: "La IA no devolvió contenido. Revisa logs.",
+          error: "La IA no devolvió contenido.",
         },
         { status: 500 }
       );
@@ -95,7 +91,7 @@ Debe ser un solo párrafo claro, contextualizado, pedagógico y completo.
     return NextResponse.json({ texto });
 
   } catch (error: any) {
-    console.error("ERROR IA:", error);
+    console.error("ERROR GEMINI:", error);
 
     return NextResponse.json(
       { error: "Error interno generando la situación." },
