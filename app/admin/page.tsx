@@ -1,0 +1,199 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
+
+export default function AdminPage() {
+  const router = useRouter();
+  const [pendientes, setPendientes] = useState(0);
+
+  useEffect(() => {
+    cargarPendientes();
+  }, []);
+
+  const cargarPendientes = async () => {
+    const { count, error } = await supabase
+      .from("solicitudes_docentes")
+      .select("*", { count: "exact", head: true })
+      .eq("estado", "pendiente");
+
+    if (error) {
+      console.error("Error cargando solicitudes pendientes:", error);
+      return;
+    }
+
+    setPendientes(count || 0);
+  };
+
+  const cerrarSesion = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
+  };
+
+  return (
+    <main className="flex min-h-screen bg-[#F5F7FA]">
+      <aside className="w-[260px] bg-[#003B7A] text-white p-6">
+        <h2 className="text-2xl font-bold mb-8">Administrador</h2>
+
+        <nav className="grid gap-3">
+          <Link
+            href="/admin"
+            className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold"
+          >
+            Panel principal
+          </Link>
+
+          <Link
+            href="/admin/solicitudes"
+            className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold flex items-center justify-between"
+          >
+            <span>Solicitudes docentes</span>
+
+            {pendientes > 0 && (
+              <span className="bg-red-600 text-white text-xs px-2 py-1 rounded-full">
+                {pendientes}
+              </span>
+            )}
+          </Link>
+
+          <Link
+            href="/admin/unidades"
+            className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold"
+          >
+            Unidades didácticas
+          </Link>
+
+          <Link
+            href="/"
+            className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold"
+          >
+            Ir al inicio
+          </Link>
+
+          <button
+            onClick={cerrarSesion}
+            className="bg-red-600 hover:bg-red-700 px-4 py-3 rounded-lg font-bold mt-2"
+          >
+            Cerrar sesión
+          </button>
+        </nav>
+      </aside>
+
+      <section className="flex-1 p-10">
+        <div className="bg-white rounded-2xl shadow p-8 mb-8 border border-gray-100">
+          <h1 className="text-4xl font-extrabold text-[#003B7A]">
+            Panel de Administrador
+          </h1>
+
+          <p className="text-gray-600 mt-3 max-w-3xl">
+            Bienvenido al panel administrativo. Desde aquí podrás gestionar la
+            biblioteca curricular, aprobar docentes y organizar los contenidos
+            que utilizarán los maestros para crear sus planificaciones.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white rounded-2xl shadow p-6 border">
+            <p className="text-gray-500 text-sm font-semibold">Módulo activo</p>
+            <h2 className="text-2xl font-extrabold text-[#003B7A] mt-2">
+              Biblioteca curricular
+            </h2>
+            <p className="text-gray-600 text-sm mt-2">
+              Administra unidades, secuencias y actividades.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow p-6 border">
+            <p className="text-gray-500 text-sm font-semibold">Solicitudes pendientes</p>
+            <h2 className="text-3xl font-extrabold text-red-600 mt-2">
+              {pendientes}
+            </h2>
+            <p className="text-gray-600 text-sm mt-2">
+              Docentes esperando aprobación.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow p-6 border">
+            <p className="text-gray-500 text-sm font-semibold">Acceso</p>
+            <h2 className="text-2xl font-extrabold text-[#003B7A] mt-2">
+              Administrador
+            </h2>
+            <p className="text-gray-600 text-sm mt-2">
+              Gestión general del sistema.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-6">
+          <Link
+            href="/admin/solicitudes"
+            className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition"
+          >
+            <div className="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center mb-5">
+              <span className="text-2xl">🧑‍🏫</span>
+            </div>
+
+            <h3 className="text-2xl font-bold text-[#003B7A]">
+              Solicitudes docentes
+            </h3>
+
+            <p className="text-gray-600 mt-2">
+              Revisa las solicitudes de docentes registrados, aprueba el acceso
+              y habilita sus cuentas dentro del sistema.
+            </p>
+
+            <span className="inline-flex items-center gap-2 mt-5 bg-[#003B7A] text-white px-5 py-3 rounded-xl font-bold">
+              Ver solicitudes
+
+              {pendientes > 0 && (
+                <span className="bg-red-600 text-white text-xs px-2 py-1 rounded-full">
+                  {pendientes}
+                </span>
+              )}
+            </span>
+          </Link>
+
+          <Link
+            href="/admin/unidades"
+            className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition"
+          >
+            <div className="w-14 h-14 bg-[#003B7A]/10 rounded-xl flex items-center justify-center mb-5">
+              <span className="text-2xl">📚</span>
+            </div>
+
+            <h3 className="text-2xl font-bold text-[#003B7A]">
+              Unidades didácticas
+            </h3>
+
+            <p className="text-gray-600 mt-2">
+              Crear, editar y organizar unidades curriculares, secuencias,
+              actividades, competencias, contenidos e indicadores.
+            </p>
+
+            <span className="inline-block mt-5 bg-[#003B7A] text-white px-5 py-3 rounded-xl font-bold">
+              Gestionar unidades
+            </span>
+          </Link>
+        </div>
+
+        <div className="bg-white rounded-2xl shadow p-8 border mt-6">
+          <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-5">
+            <span className="text-2xl">✅</span>
+          </div>
+
+          <h3 className="text-2xl font-bold text-[#003B7A]">
+            Flujo del sistema
+          </h3>
+
+          <p className="text-gray-600 mt-2">
+            El administrador aprueba docentes, crea la biblioteca curricular y
+            los docentes seleccionan las unidades disponibles para generar sus
+            planificaciones.
+          </p>
+        </div>
+      </section>
+    </main>
+  );
+}
