@@ -1,10 +1,11 @@
 "use client";
 
 import Link from "next/link";
+import { Suspense } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { unidadesPorNivelYGrado } from "@/data/unidades";
 
-export default function UnidadesDelGrado() {
+function UnidadesDelGradoContent() {
   const params = useParams();
   const searchParams = useSearchParams();
 
@@ -65,5 +66,19 @@ export default function UnidadesDelGrado() {
         )}
       </section>
     </main>
+  );
+}
+
+export default function UnidadesDelGrado() {
+  return (
+    <Suspense
+      fallback={
+        <main className="min-h-screen bg-[#F5F7FA] flex items-center justify-center">
+          <p className="text-[#003B7A] font-bold">Cargando unidades...</p>
+        </main>
+      }
+    >
+      <UnidadesDelGradoContent />
+    </Suspense>
   );
 }
