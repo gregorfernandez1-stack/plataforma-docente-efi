@@ -1,6 +1,22 @@
 import { createClient } from "@supabase/supabase-js";
 import { NextResponse } from "next/server";
 
+function traducirErrorSupabase(mensaje: string) {
+  if (mensaje.includes("already been registered")) {
+    return "Ya existe una cuenta registrada con este correo electrónico.";
+  }
+
+  if (mensaje.includes("Password should be at least")) {
+    return "La contraseña debe tener al menos 6 caracteres.";
+  }
+
+  if (mensaje.includes("Invalid email")) {
+    return "El correo electrónico no es válido.";
+  }
+
+  return mensaje;
+}
+
 export async function POST(req: Request) {
   try {
     const { nombre, correo, centro, password } = await req.json();
@@ -32,8 +48,11 @@ export async function POST(req: Request) {
       });
 
     if (userError || !userData.user) {
+      const mensajeOriginal =
+        userError?.message || "No se pudo crear el usuario";
+
       return NextResponse.json(
-        { error: userError?.message || "No se pudo crear el usuario" },
+        { error: traducirErrorSupabase(mensajeOriginal) },
         { status: 400 }
       );
     }
@@ -81,7 +100,7 @@ export async function POST(req: Request) {
     });
   } catch (err: any) {
     return NextResponse.json(
-      { error: err.message },
+      { error: "Ocurrió un error inesperado. Intenta nuevamente." },
       { status: 500 }
     );
   }
