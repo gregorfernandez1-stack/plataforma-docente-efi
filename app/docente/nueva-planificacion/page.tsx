@@ -134,7 +134,7 @@ export default function NuevaPlanificacion() {
     router.push("/");
   };
 
-  const generarSituacionConIA = () => {
+  const generarSituacionConIA = async () => {
     if (!nivel || !grado || !unidadSeleccionada || !unidadData) {
       alert("Primero selecciona nivel, grado y unidad.");
       return "";
@@ -142,23 +142,51 @@ export default function NuevaPlanificacion() {
 
     setGenerandoSituacion(true);
 
-    const textoGenerado = `En el ${
-      centro || "centro educativo"
-    }, los estudiantes de ${grado}° grado del nivel ${nivel} desarrollarán una situación de aprendizaje relacionada con ${
-      unidadData.titulo || "la unidad seleccionada"
-    }, partiendo de su realidad escolar, sus experiencias corporales y el eje transversal ${
-      unidadData.eje_transversal || "correspondiente a la unidad"
-    }. A través de ${
-      unidadData.estrategias || "estrategias activas, lúdicas y participativas"
-    }, participarán en actividades motrices, reflexivas y colaborativas que les permitan aplicar conocimientos, habilidades, actitudes y valores en un contexto significativo. Como producto, demostrarán el dominio progresivo de los contenidos de la unidad, especialmente ${
-      unidadData.contenidos_procedimentales ||
-      "los procedimientos propios del área"
-    }. Al finalizar, se espera que valoren su cuerpo, cuiden su salud, respeten a sus compañeros, participen con responsabilidad y fortalezcan las competencias previstas en los indicadores de logro.`;
+    try {
+      const res = await fetch("/api/ia/generar-situacion", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          nivel,
+          grado,
+          unidad: unidadData.titulo || "",
+          centro,
+          docente,
+          ejeTransversal: unidadData.eje_transversal || "",
+          estrategias: unidadData.estrategias || "",
+          competencias: unidadData.competencias_especificas || "",
+          indicadores: unidadData.indicadores_logro || "",
+          contenidos: {
+            conceptual: unidadData.contenidos_conceptuales || "",
+            procedimental: unidadData.contenidos_procedimentales || "",
+            actitudinal: unidadData.contenidos_actitudinales || "",
+          },
+        }),
+      });
 
-    setSituacion(textoGenerado);
-    setGenerandoSituacion(false);
+      const data = await res.json();
 
-    return textoGenerado;
+      if (!res.ok) {
+        alert(data.error || "Error generando la situación con IA.");
+        return "";
+      }
+
+      if (data.texto) {
+        setSituacion(data.texto);
+        return data.texto;
+      }
+
+      alert("No se pudo generar la situación.");
+      return "";
+    } catch (error) {
+      console.error(error);
+      alert("Ocurrió un error al conectar con la IA.");
+      return "";
+    } finally {
+      setGenerandoSituacion(false);
+    }
   };
 
   const guardarPlanificacion = async () => {
@@ -185,8 +213,12 @@ export default function NuevaPlanificacion() {
       return;
     }
 
-    const situacionFinal =
-      situacion.trim() !== "" ? situacion : generarSituacionConIA();
+    const situacionFinal = situacion.trim();
+
+    if (!situacionFinal) {
+      alert("Genera o redacta la situación de aprendizaje antes de guardar.");
+      return;
+    }
 
     const { error } = await supabase.from("planificaciones").insert([
       {
@@ -416,9 +448,9 @@ export default function NuevaPlanificacion() {
                 type="button"
                 onClick={generarSituacionConIA}
                 disabled={!unidadData || generandoSituacion}
-                className="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-5 py-3 rounded-lg font-bold"
+                className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white px-5 py-3 rounded-lg font-bold"
               >
-                {generandoSituacion ? "Generando..." : "Generar situación con IA"}
+                {generandoSituacion ? "Generando..." : "Generar con IA"}
               </button>
             </div>
 

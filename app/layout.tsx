@@ -12,13 +12,19 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
+export const metadata = {
   title: "Plataforma de planificación docente en Educación Física",
   description:
     "Sistema para la creación, gestión y organización de planificaciones docentes en Educación Física.",
   icons: {
-    icon: "/favicon.ico",
+    icon: [
+      { url: "/favicon.ico" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
   },
+   manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({
