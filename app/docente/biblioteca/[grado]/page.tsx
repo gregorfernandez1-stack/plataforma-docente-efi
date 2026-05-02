@@ -237,22 +237,6 @@ export default function BibliotecaPorGrado() {
             })}
           </div>
         </div>
-
-        {/* 4. DOCUMENTOS */}
-        <div>
-          <h2 className="text-2xl font-bold mb-4">
-            4. Documentos curriculares
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-4 border rounded">📘 Diseño curricular</div>
-            <div className="p-4 border rounded">📜 Ordenanzas</div>
-            <div className="p-4 border rounded">📗 Guías didácticas</div>
-            <div className="p-4 border rounded">📅 Calendario escolar</div>
-            <div className="p-4 border rounded">🏛 Normativas</div>
-            <div className="p-4 border rounded">📁 Otros</div>
-          </div>
-        </div>
       </section>
     </main>
   );
