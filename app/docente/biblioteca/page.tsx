@@ -1,8 +1,14 @@
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 
-export default function BibliotecaCurricular() {
+export default async function BibliotecaCurricular() {
   const niveles = ["Primario", "Secundario"];
   const grados = ["1", "2", "3", "4", "5", "6"];
+
+  const { data: documentos } = await supabase
+    .from("documentos_curriculares")
+    .select("*")
+    .order("created_at", { ascending: false });
 
   return (
     <main className="min-h-screen bg-[#F5F7FA] px-6 py-10">
@@ -24,6 +30,7 @@ export default function BibliotecaCurricular() {
           aspectos curriculares y secuencias.
         </p>
 
+        {/* 🔵 NIVELES Y GRADOS */}
         {niveles.map((nivel) => (
           <div key={nivel} className="mb-10">
             <h2 className="text-2xl font-bold text-[#003B7A] mb-4">
@@ -49,6 +56,39 @@ export default function BibliotecaCurricular() {
             </div>
           </div>
         ))}
+
+        {/* 📄 DOCUMENTOS CURRICULARES */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold text-[#003B7A] mb-4">
+            Documentos curriculares
+          </h2>
+
+          {(!documentos || documentos.length === 0) && (
+            <p className="text-gray-500">
+              No hay documentos disponibles.
+            </p>
+          )}
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {documentos?.map((doc) => (
+              <a
+                key={doc.id}
+                href={doc.url}
+                target="_blank"
+                className="p-4 border rounded-lg hover:bg-gray-100 bg-white flex justify-between items-center"
+              >
+                <span>
+                  📄 {doc.titulo}
+                </span>
+
+                <span className="text-sm text-gray-500">
+                  {doc.tipo}
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+
       </section>
     </main>
   );
