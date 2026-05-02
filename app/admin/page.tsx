@@ -38,19 +38,12 @@ export default function AdminPage() {
         <h2 className="text-2xl font-bold mb-8">Administrador</h2>
 
         <nav className="grid gap-3">
-          <Link
-            href="/admin"
-            className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold"
-          >
+          <Link href="/admin" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold">
             Panel principal
           </Link>
 
-          <Link
-            href="/admin/solicitudes"
-            className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold flex items-center justify-between"
-          >
+          <Link href="/admin/solicitudes" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold flex items-center justify-between">
             <span>Solicitudes docentes</span>
-
             {pendientes > 0 && (
               <span className="bg-red-600 text-white text-xs px-2 py-1 rounded-full">
                 {pendientes}
@@ -58,17 +51,15 @@ export default function AdminPage() {
             )}
           </Link>
 
-          <Link
-            href="/admin/unidades"
-            className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold"
-          >
+          <Link href="/admin/unidades" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold">
             Unidades didácticas
           </Link>
 
-          <Link
-            href="/"
-            className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold"
-          >
+          <Link href="/admin/documentos" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold">
+            Documentos curriculares
+          </Link>
+
+          <Link href="/" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold">
             Ir al inicio
           </Link>
 
@@ -101,12 +92,14 @@ export default function AdminPage() {
               Biblioteca curricular
             </h2>
             <p className="text-gray-600 text-sm mt-2">
-              Administra unidades, secuencias y actividades.
+              Administra unidades, documentos, secuencias y actividades.
             </p>
           </div>
 
           <div className="bg-white rounded-2xl shadow p-6 border">
-            <p className="text-gray-500 text-sm font-semibold">Solicitudes pendientes</p>
+            <p className="text-gray-500 text-sm font-semibold">
+              Solicitudes pendientes
+            </p>
             <h2 className="text-3xl font-extrabold text-red-600 mt-2">
               {pendientes}
             </h2>
@@ -126,11 +119,8 @@ export default function AdminPage() {
           </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <Link
-            href="/admin/solicitudes"
-            className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition"
-          >
+        <div className="grid md:grid-cols-3 gap-6">
+          <Link href="/admin/solicitudes" className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition">
             <div className="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center mb-5">
               <span className="text-2xl">🧑‍🏫</span>
             </div>
@@ -140,25 +130,15 @@ export default function AdminPage() {
             </h3>
 
             <p className="text-gray-600 mt-2">
-              Revisa las solicitudes de docentes registrados, aprueba el acceso
-              y habilita sus cuentas dentro del sistema.
+              Revisa las solicitudes de docentes registrados y aprueba el acceso.
             </p>
 
             <span className="inline-flex items-center gap-2 mt-5 bg-[#003B7A] text-white px-5 py-3 rounded-xl font-bold">
               Ver solicitudes
-
-              {pendientes > 0 && (
-                <span className="bg-red-600 text-white text-xs px-2 py-1 rounded-full">
-                  {pendientes}
-                </span>
-              )}
             </span>
           </Link>
 
-          <Link
-            href="/admin/unidades"
-            className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition"
-          >
+          <Link href="/admin/unidades" className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition">
             <div className="w-14 h-14 bg-[#003B7A]/10 rounded-xl flex items-center justify-center mb-5">
               <span className="text-2xl">📚</span>
             </div>
@@ -168,30 +148,31 @@ export default function AdminPage() {
             </h3>
 
             <p className="text-gray-600 mt-2">
-              Crear, editar y organizar unidades curriculares, secuencias,
-              actividades, competencias, contenidos e indicadores.
+              Crear, editar y organizar unidades curriculares.
             </p>
 
             <span className="inline-block mt-5 bg-[#003B7A] text-white px-5 py-3 rounded-xl font-bold">
               Gestionar unidades
             </span>
           </Link>
-        </div>
 
-        <div className="bg-white rounded-2xl shadow p-8 border mt-6">
-          <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-5">
-            <span className="text-2xl">✅</span>
-          </div>
+          <Link href="/admin/documentos" className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition">
+            <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-5">
+              <span className="text-2xl">📄</span>
+            </div>
 
-          <h3 className="text-2xl font-bold text-[#003B7A]">
-            Flujo del sistema
-          </h3>
+            <h3 className="text-2xl font-bold text-[#003B7A]">
+              Documentos curriculares
+            </h3>
 
-          <p className="text-gray-600 mt-2">
-            El administrador aprueba docentes, crea la biblioteca curricular y
-            los docentes seleccionan las unidades disponibles para generar sus
-            planificaciones.
-          </p>
+            <p className="text-gray-600 mt-2">
+              Subir diseño curricular, ordenanzas, guías, calendario y normativas.
+            </p>
+
+            <span className="inline-block mt-5 bg-[#003B7A] text-white px-5 py-3 rounded-xl font-bold">
+              Gestionar documentos
+            </span>
+          </Link>
         </div>
       </section>
     </main>
