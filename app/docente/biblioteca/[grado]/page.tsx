@@ -1,43 +1,22 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 
-export default function BibliotecaPorGrado() {
-  const params = useParams();
-  const searchParams = useSearchParams();
+export default async function BibliotecaPorGrado({
+  params,
+  searchParams,
+}: {
+  params: { grado: string };
+  searchParams: { nivel?: string };
+}) {
+  const grado = params.grado;
+  const nivel = searchParams.nivel || "";
 
-  const grado = params.grado as string;
-  const nivel = searchParams.get("nivel") || "";
-
-  const [unidades, setUnidades] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    cargarUnidades();
-  }, [grado, nivel]);
-
-  const cargarUnidades = async () => {
-    setLoading(true);
-
-    const { data, error } = await supabase
-      .from("unidades")
-      .select("*")
-      .eq("grado", grado)
-      .eq("nivel", nivel)
-      .order("created_at", { ascending: true });
-
-    if (error) {
-      console.error("Error cargando unidades:", error.message);
-      setUnidades([]);
-    } else {
-      setUnidades(data || []);
-    }
-
-    setLoading(false);
-  };
+  const { data: unidades } = await supabase
+    .from("unidades")
+    .select("*")
+    .eq("grado", grado)
+    .eq("nivel", nivel)
+    .order("created_at", { ascending: true });
 
   return (
     <main className="min-h-screen bg-[#F5F7FA] px-6 py-10">
@@ -57,150 +36,72 @@ export default function BibliotecaPorGrado() {
           Nivel: <strong>{nivel}</strong> | Grado: <strong>{grado}°</strong>
         </p>
 
-        {loading ? (
-          <p className="text-gray-600">Cargando información curricular...</p>
-        ) : unidades.length === 0 ? (
-          <div className="bg-yellow-50 border border-yellow-200 p-6 rounded-xl text-yellow-800">
-            No hay unidades registradas para este nivel y grado.
+        {/* 1. UNIDADES */}
+        <div className="mb-10">
+          <h2 className="text-2xl font-bold text-[#003B7A] mb-4">
+            1. Unidades didácticas
+          </h2>
+
+          <div className="grid md:grid-cols-2 gap-4">
+            {unidades?.map((u, i) => (
+              <div key={u.id} className="p-5 bg-blue-50 rounded-xl border">
+                <h3 className="font-bold text-[#003B7A]">
+                  Unidad {i + 1}
+                </h3>
+                <p className="mt-2 font-semibold">
+                  {u.unidad || u.titulo}
+                </p>
+              </div>
+            ))}
           </div>
-        ) : (
-          <>
-            {/* 1. UNIDADES DIDÁCTICAS */}
-            <div className="mb-10">
-              <h2 className="text-2xl font-bold text-[#003B7A] mb-4">
-                1. Unidades didácticas
-              </h2>
+        </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
-                {unidades.map((unidad, index) => (
-                  <div
-                    key={unidad.id || index}
-                    className="border rounded-xl p-5 bg-blue-50 shadow-sm"
-                  >
-                    <h3 className="text-lg font-bold text-[#003B7A]">
-                      Unidad {index + 1}
-                    </h3>
+        {/* 2. ASPECTOS */}
+        <div className="mb-10">
+          <h2 className="text-2xl font-bold text-purple-700 mb-4">
+            2. Aspectos curriculares
+          </h2>
 
-                    <p className="text-gray-700 mt-2 font-semibold">
-                      {unidad.unidad || unidad.nombre || unidad.titulo || "Sin título"}
-                    </p>
-
-                    {unidad.situacion && (
-                      <p className="text-gray-600 mt-3 text-sm">
-                        <strong>Situación de aprendizaje:</strong>{" "}
-                        {unidad.situacion}
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
+          {unidades?.map((u) => (
+            <div key={u.id} className="bg-purple-50 p-5 rounded-xl mb-4">
+              <p><b>Competencias:</b> {u.competencias_especificas}</p>
+              <p><b>Indicadores:</b> {u.indicadores}</p>
+              <p><b>Contenidos:</b> {u.contenidos}</p>
             </div>
+          ))}
+        </div>
 
-            {/* 2. ASPECTOS CURRICULARES */}
-            <div className="mb-10">
-              <h2 className="text-2xl font-bold text-purple-700 mb-4">
-                2. Aspectos curriculares
-              </h2>
+        {/* 3. SECUENCIAS */}
+        <div className="mb-10">
+          <h2 className="text-2xl font-bold text-green-700 mb-4">
+            3. Secuencias y actividades
+          </h2>
 
-              <div className="space-y-5">
-                {unidades.map((unidad, index) => (
-                  <div
-                    key={unidad.id || index}
-                    className="border rounded-xl p-6 bg-purple-50"
-                  >
-                    <h3 className="text-lg font-bold text-purple-800 mb-4">
-                      {unidad.unidad || unidad.nombre || unidad.titulo || `Unidad ${index + 1}`}
-                    </h3>
-
-                    <div className="grid md:grid-cols-2 gap-4 text-gray-700">
-                      <Info titulo="Eje transversal" valor={unidad.eje_transversal} />
-                      <Info titulo="Estrategias" valor={unidad.estrategias} />
-                      <Info titulo="Competencias específicas" valor={unidad.competencias_especificas} />
-                      <Info titulo="Indicadores de logro" valor={unidad.indicadores} />
-                      <Info titulo="Grupos de competencias" valor={unidad.grupos_competencias} />
-                      <Info titulo="Áreas articuladas" valor={unidad.areas_articuladas} />
-                      <Info titulo="Contenidos" valor={unidad.contenidos} />
-                    </div>
-                  </div>
-                ))}
-              </div>
+          {unidades?.map((u) => (
+            <div key={u.id} className="bg-green-50 p-5 rounded-xl mb-4">
+              <pre className="whitespace-pre-wrap">
+                {JSON.stringify(u.secuencias, null, 2)}
+              </pre>
             </div>
+          ))}
+        </div>
 
-            {/* 3. SECUENCIAS Y ACTIVIDADES */}
-            <div className="mb-10">
-              <h2 className="text-2xl font-bold text-green-700 mb-4">
-                3. Secuencias y actividades
-              </h2>
-
-              <div className="space-y-5">
-                {unidades.map((unidad, index) => (
-                  <div
-                    key={unidad.id || index}
-                    className="border rounded-xl p-6 bg-green-50"
-                  >
-                    <h3 className="text-lg font-bold text-green-800 mb-3">
-                      {unidad.unidad || unidad.nombre || unidad.titulo || `Unidad ${index + 1}`}
-                    </h3>
-
-                    {unidad.secuencias ? (
-                      <pre className="whitespace-pre-wrap text-gray-700 font-sans">
-                        {typeof unidad.secuencias === "string"
-                          ? unidad.secuencias
-                          : JSON.stringify(unidad.secuencias, null, 2)}
-                      </pre>
-                    ) : (
-                      <p className="text-gray-600">
-                        No hay secuencias registradas para esta unidad.
-                      </p>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </>
-        )}
-
-        {/* 4. DOCUMENTOS CURRICULARES */}
-        <div className="mt-10">
-          <h2 className="text-2xl font-bold text-gray-800 mb-4">
+        {/* 4. DOCUMENTOS */}
+        <div>
+          <h2 className="text-2xl font-bold mb-4">
             4. Documentos curriculares
           </h2>
 
           <div className="grid md:grid-cols-2 gap-4">
-            <Documento titulo="Diseño curricular" icono="📘" />
-            <Documento titulo="Ordenanzas" icono="📜" />
-            <Documento titulo="Guías didácticas" icono="📗" />
-            <Documento titulo="Calendario escolar" icono="📅" />
-            <Documento titulo="Normativas MINERD / INEFI" icono="🏛" />
-            <Documento titulo="Otros documentos" icono="📁" />
+            <div className="p-4 border rounded">📘 Diseño curricular</div>
+            <div className="p-4 border rounded">📜 Ordenanzas</div>
+            <div className="p-4 border rounded">📗 Guías didácticas</div>
+            <div className="p-4 border rounded">📅 Calendario escolar</div>
+            <div className="p-4 border rounded">🏛 Normativas</div>
+            <div className="p-4 border rounded">📁 Otros</div>
           </div>
         </div>
       </section>
     </main>
-  );
-}
-
-function Info({ titulo, valor }: { titulo: string; valor: any }) {
-  return (
-    <div className="bg-white border rounded-lg p-4">
-      <h4 className="font-bold text-gray-800 mb-2">{titulo}</h4>
-
-      {valor ? (
-        <p className="text-sm whitespace-pre-wrap">
-          {typeof valor === "string" ? valor : JSON.stringify(valor, null, 2)}
-        </p>
-      ) : (
-        <p className="text-sm text-gray-400">No registrado</p>
-      )}
-    </div>
-  );
-}
-
-function Documento({ titulo, icono }: { titulo: string; icono: string }) {
-  return (
-    <div className="p-4 border rounded-lg hover:bg-gray-100 bg-white cursor-pointer">
-      <span className="mr-2">{icono}</span>
-      {titulo}
-    </div>
   );
 }
