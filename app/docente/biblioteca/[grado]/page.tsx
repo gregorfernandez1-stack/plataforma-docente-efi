@@ -1,22 +1,43 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 
-export default async function BibliotecaPorGrado({
-  params,
-  searchParams,
-}: {
-  params: { grado: string };
-  searchParams: { nivel?: string };
-}) {
-  const grado = params.grado;
-  const nivel = searchParams.nivel || "";
+export default function BibliotecaPorGrado() {
+  const params = useParams();
+  const searchParams = useSearchParams();
 
-  const { data: unidades } = await supabase
-    .from("unidades")
-    .select("*")
-    .eq("grado", grado)
-    .eq("nivel", nivel)
-    .order("created_at", { ascending: true });
+  const grado = params.grado as string;
+  const nivel = searchParams.get("nivel") || "";
+
+  const [unidades, setUnidades] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function cargarUnidades() {
+      const { data, error } = await supabase
+        .from("unidades")
+        .select("*")
+        .eq("grado", grado)
+        .eq("nivel", nivel)
+        .order("created_at", { ascending: true });
+
+      if (error) {
+        console.error("Error cargando unidades:", error.message);
+        setUnidades([]);
+      } else {
+        setUnidades(data || []);
+      }
+
+      setLoading(false);
+    }
+
+    if (grado && nivel) {
+      cargarUnidades();
+    }
+  }, [grado, nivel]);
 
   return (
     <main className="min-h-screen bg-[#F5F7FA] px-6 py-10">
@@ -36,66 +57,73 @@ export default async function BibliotecaPorGrado({
           Nivel: <strong>{nivel}</strong> | Grado: <strong>{grado}°</strong>
         </p>
 
-        {/* 1. UNIDADES */}
         <div className="mb-10">
           <h2 className="text-2xl font-bold text-[#003B7A] mb-4">
             1. Unidades didácticas
           </h2>
 
-          <div className="grid md:grid-cols-2 gap-4">
-            {unidades?.map((u, i) => (
-              <div key={u.id} className="p-5 bg-blue-50 rounded-xl border">
-                <h3 className="font-bold text-[#003B7A]">
-                  Unidad {i + 1}
-                </h3>
+          {loading ? (
+            <p>Cargando unidades...</p>
+          ) : unidades.length === 0 ? (
+            <p className="text-gray-500">
+              No hay unidades registradas para este nivel y grado.
+            </p>
+          ) : (
+            <div className="grid md:grid-cols-2 gap-4">
+              {unidades.map((u, i) => (
+                <div key={u.id} className="p-5 bg-blue-50 rounded-xl border">
+                  <h3 className="font-bold text-[#003B7A]">Unidad {i + 1}</h3>
 
-                <p className="mt-2 font-semibold">
-                  {u.unidad || u.titulo}
-                </p>
+                  <p className="mt-2 font-semibold">
+                    {u.unidad || u.titulo || "Unidad sin título"}
+                  </p>
 
-                {/* 🔥 LINK A DETALLE */}
-                <Link
-                  href={`/docente/biblioteca/unidad/${u.id}`}
-                  className="inline-block mt-4 text-blue-700 font-semibold hover:underline"
-                >
-                  Ver unidad →
-                </Link>
-              </div>
-            ))}
-          </div>
+                  <Link
+                    href={`/docente/biblioteca/unidad/${u.id}`}
+                    className="inline-block mt-4 text-blue-700 font-semibold hover:underline"
+                  >
+                    Ver unidad →
+                  </Link>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
-        {/* 2. ASPECTOS */}
         <div className="mb-10">
           <h2 className="text-2xl font-bold text-purple-700 mb-4">
             2. Aspectos curriculares
           </h2>
 
-          {unidades?.map((u) => (
+          {unidades.map((u) => (
             <div key={u.id} className="bg-purple-50 p-5 rounded-xl mb-4">
-              <p><b>Competencias:</b> {u.competencias_especificas}</p>
-              <p><b>Indicadores:</b> {u.indicadores}</p>
-              <p><b>Contenidos:</b> {u.contenidos}</p>
+              <p><b>Competencias:</b> {u.competencias_especificas || "No registrado"}</p>
+              <p><b>Indicadores:</b> {u.indicadores || "No registrado"}</p>
+              <p><b>Contenidos:</b> {u.contenidos || "No registrado"}</p>
             </div>
           ))}
         </div>
 
-        {/* 3. SECUENCIAS */}
         <div className="mb-10">
           <h2 className="text-2xl font-bold text-green-700 mb-4">
             3. Secuencias y actividades
           </h2>
 
-          {unidades?.map((u) => (
+          {unidades.map((u) => (
             <div key={u.id} className="bg-green-50 p-5 rounded-xl mb-4">
+              <h3 className="font-bold mb-2">
+                {u.unidad || u.titulo || "Unidad"}
+              </h3>
+
               <pre className="whitespace-pre-wrap">
-                {JSON.stringify(u.secuencias, null, 2)}
+                {u.secuencias
+                  ? JSON.stringify(u.secuencias, null, 2)
+                  : "No hay secuencias registradas."}
               </pre>
             </div>
           ))}
         </div>
 
-        {/* 4. DOCUMENTOS */}
         <div>
           <h2 className="text-2xl font-bold mb-4">
             4. Documentos curriculares
