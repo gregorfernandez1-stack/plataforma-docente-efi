@@ -48,9 +48,18 @@ export default async function BibliotecaPorGrado({
                 <h3 className="font-bold text-[#003B7A]">
                   Unidad {i + 1}
                 </h3>
+
                 <p className="mt-2 font-semibold">
                   {u.unidad || u.titulo}
                 </p>
+
+                {/* 🔥 LINK A DETALLE */}
+                <Link
+                  href={`/docente/biblioteca/unidad/${u.id}`}
+                  className="inline-block mt-4 text-blue-700 font-semibold hover:underline"
+                >
+                  Ver unidad →
+                </Link>
               </div>
             ))}
           </div>
