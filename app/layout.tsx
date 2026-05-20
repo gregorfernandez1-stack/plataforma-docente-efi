@@ -12,10 +12,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata = {
-  title: "Plataforma de planificación docente en Educación Física",
+export const metadata: Metadata = {
+  title: "Sistema de Planificación en Educación Física por Competencia",
   description:
-    "Sistema para la creación, gestión y organización de planificaciones docentes en Educación Física.",
+    "Sistema para la creación, gestión, organización y planificación docente basada en competencias en Educación Física.",
   icons: {
     icon: "/favicon.ico",
   },
@@ -28,10 +28,12 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="es"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+      </body>
     </html>
   );
 }
