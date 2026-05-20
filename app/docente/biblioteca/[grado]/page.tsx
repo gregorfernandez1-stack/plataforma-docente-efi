@@ -195,48 +195,59 @@ export default function BibliotecaPorGrado() {
           </div>
         </div>
 
-        {/* 3. SECUENCIAS */}
-        <div className="mb-10">
-          <h2 className="text-2xl font-bold text-green-700 mb-4">
-            3. Secuencias y actividades
-          </h2>
+     {/* 3. TEMAS Y SECUENCIAS */}
+<div className="mb-10">
+  <h2 className="text-2xl font-bold text-green-700 mb-4">
+    3. Temas y secuencias
+  </h2>
 
-          <div className="space-y-6">
-            {unidades.map((u, i) => {
-              const secuencias = limpiarSecuencias(u.secuencias);
+  <div className="space-y-6">
+    {unidades.map((u, i) => {
+      const secuencias = limpiarSecuencias(u.secuencias);
 
-              return (
-                <div key={u.id} className="bg-green-50 p-6 rounded-xl border">
-                  <h3 className="font-bold text-green-800 mb-4">
-                    Unidad {i + 1}: {u.unidad || u.titulo || "Unidad sin título"}
-                  </h3>
+      return (
+        <div key={u.id} className="bg-green-50 p-6 rounded-xl border">
+          <h3 className="font-bold text-green-800 mb-4">
+            Unidad {i + 1}: {u.unidad || u.titulo || "Unidad sin título"}
+          </h3>
 
-                  {secuencias.length === 0 ? (
-                    <p className="text-gray-500">
-                      No hay secuencias registradas.
-                    </p>
-                  ) : (
-                    <div className="space-y-4">
-                      {secuencias.map((sec, index) => (
-                        <div key={index} className="bg-white p-4 rounded-lg border">
-                          <h4 className="font-bold text-green-700 mb-2">
-                            Secuencia {index + 1}: {sec.nombre}
-                          </h4>
+          {secuencias.length === 0 ? (
+            <p className="text-gray-500">
+              No hay temas registrados.
+            </p>
+          ) : (
+            <div className="space-y-4">
+              {secuencias.map((tema, index) => (
+                <div
+                  key={index}
+                  className="bg-white p-4 rounded-lg border"
+                >
+                  <h4 className="font-bold text-green-700 mb-3">
+                    Tema {index + 1}: {tema.nombre}
+                  </h4>
 
-                          <ul className="list-disc pl-6 space-y-1">
-                            {sec.actividades?.map((act, actIndex) => (
-                              <li key={actIndex}>{act}</li>
-                            ))}
-                          </ul>
-                        </div>
-                      ))}
-                    </div>
-                  )}
+                  <div className="pl-4">
+                    {tema.actividades?.map((sec, secIndex) => (
+                      <div
+                        key={secIndex}
+                        className="mb-2 p-2 rounded bg-gray-50"
+                      >
+                        <strong>
+                          Secuencia {secIndex + 1}:
+                        </strong>{" "}
+                        {sec}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              );
-            })}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
+      );
+    })}
+  </div>
+</div>
       </section>
     </main>
   );
