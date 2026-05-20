@@ -5,7 +5,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 
-type Secuencia = {
+type Tema = {
   nombre: string;
   actividades: string[];
 };
@@ -67,7 +67,7 @@ export default function BibliotecaPorGrado() {
     return [String(valor)];
   };
 
-  const limpiarSecuencias = (valor: any): Secuencia[] => {
+  const limpiarTemas = (valor: any): Tema[] => {
     if (!valor) return [];
 
     try {
@@ -83,7 +83,7 @@ export default function BibliotecaPorGrado() {
         return parsed;
       }
     } catch (error) {
-      console.error("Error limpiando secuencias:", error);
+      console.error("Error limpiando temas:", error);
       return [];
     }
 
@@ -129,13 +129,6 @@ export default function BibliotecaPorGrado() {
                   <p className="mt-2 font-semibold">
                     {u.unidad || u.titulo || "Unidad sin título"}
                   </p>
-
-                  <Link
-                    href={`/docente/biblioteca/unidad/${u.id}`}
-                    className="inline-block mt-4 text-blue-700 font-semibold hover:underline"
-                  >
-                    Ver unidad →
-                  </Link>
                 </div>
               ))}
             </div>
@@ -195,59 +188,55 @@ export default function BibliotecaPorGrado() {
           </div>
         </div>
 
-     {/* 3. TEMAS Y SECUENCIAS */}
-<div className="mb-10">
-  <h2 className="text-2xl font-bold text-green-700 mb-4">
-    3. Temas y secuencias
-  </h2>
+        {/* 3. TEMAS Y SECUENCIAS */}
+        <div className="mb-10">
+          <h2 className="text-2xl font-bold text-green-700 mb-4">
+            3. Temas y secuencias
+          </h2>
 
-  <div className="space-y-6">
-    {unidades.map((u, i) => {
-      const secuencias = limpiarSecuencias(u.secuencias);
+          <div className="space-y-6">
+            {unidades.map((u, i) => {
+              const temas = limpiarTemas(u.secuencias);
 
-      return (
-        <div key={u.id} className="bg-green-50 p-6 rounded-xl border">
-          <h3 className="font-bold text-green-800 mb-4">
-            Unidad {i + 1}: {u.unidad || u.titulo || "Unidad sin título"}
-          </h3>
+              return (
+                <div key={u.id} className="bg-green-50 p-6 rounded-xl border">
+                  <h3 className="font-bold text-green-800 mb-4">
+                    Unidad {i + 1}: {u.unidad || u.titulo || "Unidad sin título"}
+                  </h3>
 
-          {secuencias.length === 0 ? (
-            <p className="text-gray-500">
-              No hay temas registrados.
-            </p>
-          ) : (
-            <div className="space-y-4">
-              {secuencias.map((tema, index) => (
-                <div
-                  key={index}
-                  className="bg-white p-4 rounded-lg border"
-                >
-                  <h4 className="font-bold text-green-700 mb-3">
-                    Tema {index + 1}: {tema.nombre}
-                  </h4>
+                  {temas.length === 0 ? (
+                    <p className="text-gray-500">No hay temas registrados.</p>
+                  ) : (
+                    <div className="space-y-4">
+                      {temas.map((tema, index) => (
+                        <div
+                          key={index}
+                          className="bg-white p-4 rounded-lg border"
+                        >
+                          <h4 className="font-bold text-green-700 mb-3">
+                            Tema {index + 1}: {tema.nombre}
+                          </h4>
 
-                  <div className="pl-4">
-                    {tema.actividades?.map((sec, secIndex) => (
-                      <div
-                        key={secIndex}
-                        className="mb-2 p-2 rounded bg-gray-50"
-                      >
-                        <strong>
-                          Secuencia {secIndex + 1}:
-                        </strong>{" "}
-                        {sec}
-                      </div>
-                    ))}
-                  </div>
+                          <div className="pl-4 space-y-2">
+                            {tema.actividades?.map((secuencia, secIndex) => (
+                              <div
+                                key={secIndex}
+                                className="p-3 rounded bg-gray-50 border"
+                              >
+                                <strong>Secuencia {secIndex + 1}:</strong>{" "}
+                                {secuencia}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
-              ))}
-            </div>
-          )}
+              );
+            })}
+          </div>
         </div>
-      );
-    })}
-  </div>
-</div>
       </section>
     </main>
   );
