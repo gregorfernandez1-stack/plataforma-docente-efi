@@ -7,8 +7,8 @@ export default function Home() {
       <div className="absolute top-[-100px] left-[-100px] w-[300px] h-[300px] bg-[#1E6091]/15 rounded-full blur-3xl" />
 
       <section className="relative max-w-7xl mx-auto px-6 md:px-10 py-8 md:py-10">
-        
-        {/* HEADER SOLO CON LOGOS */}
+
+        {/* LOGOS */}
         <header className="flex justify-start mb-10 md:mb-14">
           <div className="flex items-center gap-6 bg-white px-6 py-4 rounded-2xl shadow-sm border border-gray-200">
             <img
@@ -16,6 +16,7 @@ export default function Home() {
               alt="INEFI"
               className="h-16 md:h-20 object-contain"
             />
+
             <img
               src="/logos/minerd.png"
               alt="MINERD"
@@ -25,16 +26,16 @@ export default function Home() {
         </header>
 
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
-          
-          {/* TEXTO PRINCIPAL */}
+
+          {/* TEXTO */}
           <div>
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.08] mb-6 max-w-3xl">
-              Plataforma de planificación docente en Educación Física
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black leading-[1.08] mb-6 max-w-4xl">
+              Sistema de Planificación en Educación Física por Competencia
             </h1>
 
             <p className="text-gray-700 text-lg md:text-xl leading-relaxed max-w-2xl mb-8">
-              Organiza unidades, contenidos, competencias, indicadores y
-              secuencias de clases desde un solo espacio digital.
+              Organiza unidades didácticas, competencias, indicadores,
+              temas y secuencias desde un solo espacio digital.
             </p>
 
             <div className="flex flex-wrap gap-4">
@@ -56,13 +57,14 @@ export default function Home() {
 
           {/* TARJETAS */}
           <div className="grid gap-5">
+
             <div className="bg-white border border-gray-200 rounded-3xl p-7 shadow-sm">
               <h2 className="text-3xl font-black text-[#1E6091] mb-3">
                 Docente
               </h2>
+
               <p className="text-gray-700 leading-relaxed">
-                Crea y consulta tus planificaciones de unidad y secuencias
-                diarias.
+                Crea, organiza y consulta tus planificaciones por competencias.
               </p>
             </div>
 
@@ -70,26 +72,35 @@ export default function Home() {
               <h2 className="text-3xl font-black text-[#003B7A] mb-3">
                 Administrador
               </h2>
+
               <p className="text-gray-700 leading-relaxed">
-                Gestiona la biblioteca curricular que usarán los docentes.
+                Gestiona biblioteca curricular, documentos y recursos docentes.
               </p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+
               <div className="bg-white/90 border border-gray-200 rounded-2xl p-5 text-center shadow-sm">
                 <p className="text-3xl font-black text-[#1E6091]">01</p>
-                <p className="text-sm text-gray-700 mt-1">Unidades</p>
+                <p className="text-sm text-gray-700 mt-1">
+                  Unidades
+                </p>
               </div>
 
               <div className="bg-white/90 border border-gray-200 rounded-2xl p-5 text-center shadow-sm">
                 <p className="text-3xl font-black text-[#1E6091]">02</p>
-                <p className="text-sm text-gray-700 mt-1">Secuencias</p>
+                <p className="text-sm text-gray-700 mt-1">
+                  Temas
+                </p>
               </div>
 
               <div className="bg-white/90 border border-gray-200 rounded-2xl p-5 text-center shadow-sm">
                 <p className="text-3xl font-black text-[#1E6091]">03</p>
-                <p className="text-sm text-gray-700 mt-1">Planificación</p>
+                <p className="text-sm text-gray-700 mt-1">
+                  Secuencias
+                </p>
               </div>
+
             </div>
           </div>
 
