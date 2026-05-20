@@ -637,12 +637,12 @@ export default function NuevaPlanificacion() {
 
                 <div>
                   <h3 className="font-bold text-[#1E6091] mb-3">
-                    Secuencias y actividades
-                  </h3>
+  Temas y secuencias
+</h3>
 
                   {secuenciasUnidad.length === 0 ? (
                     <p className="text-gray-500">
-                      Esta unidad no tiene secuencias registradas.
+                      Esta unidad no tiene temas registrados.
                     </p>
                   ) : (
                     <div className="grid gap-4">
@@ -652,16 +652,18 @@ export default function NuevaPlanificacion() {
                           className="border rounded-xl overflow-hidden"
                         >
                           <div className="bg-blue-50 px-4 py-3 font-bold text-[#1E6091]">
-                            Secuencia {index + 1}: {secuencia.nombre}
-                          </div>
+  Tema {index + 1}: {secuencia.nombre}
+</div>
 
-                          <ul className="list-disc ml-8 py-4 pr-4 text-gray-700">
-                            {(secuencia.actividades || []).map(
-                              (actividad: string, i: number) => (
-                                <li key={i}>{actividad}</li>
-                              )
-                            )}
-                          </ul>
+<ul className="list-disc ml-8 py-4 pr-4 text-gray-700">
+  {(secuencia.actividades || []).map(
+    (actividad: string, i: number) => (
+      <li key={i}>
+        <strong>Secuencia {i + 1}:</strong> {actividad}
+      </li>
+    )
+  )}
+</ul>
                         </div>
                       ))}
                     </div>

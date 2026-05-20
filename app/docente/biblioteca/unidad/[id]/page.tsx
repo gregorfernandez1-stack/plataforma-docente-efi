@@ -95,9 +95,9 @@ export default async function UnidadDetalle({
         </div>
 
         <div className="mb-8 bg-green-50 p-6 rounded-xl border">
-          <h2 className="text-xl font-bold text-green-700 mb-4">
-            Secuencias y actividades
-          </h2>
+         <h2 className="text-xl font-bold text-green-700 mb-4">
+  Temas y secuencias
+</h2>
 
           {secuencias.length === 0 ? (
             <p>No hay secuencias registradas.</p>
@@ -105,15 +105,17 @@ export default async function UnidadDetalle({
             <div className="space-y-4">
               {secuencias.map((sec: any, index: number) => (
                 <div key={index} className="bg-white p-4 rounded-lg border">
-                  <h3 className="font-bold text-green-700 mb-2">
-                    Secuencia {index + 1}: {sec.nombre}
-                  </h3>
+                <h3 className="font-bold text-green-700 mb-2">
+  Tema {index + 1}: {sec.nombre}
+</h3>
 
-                  <ul className="list-disc pl-6">
-                    {sec.actividades?.map((act: string, i: number) => (
-                      <li key={i}>{act}</li>
-                    ))}
-                  </ul>
+<ul className="list-disc pl-6">
+  {sec.actividades?.map((act: string, i: number) => (
+    <li key={i}>
+      <strong>Secuencia {i + 1}:</strong> {act}
+    </li>
+  ))}
+</ul>
                 </div>
               ))}
             </div>
