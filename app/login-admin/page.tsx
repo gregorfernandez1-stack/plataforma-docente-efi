@@ -53,7 +53,9 @@ export default function LoginAdmin() {
         </h1>
 
         <p className="text-gray-600 mb-8">
-          Accede para gestionar docentes, grados, unidades y contenidos curriculares.
+          Accede al Sistema de Planificación en Educación Física por Competencia
+          para gestionar docentes, unidades, temas, secuencias y documentos
+          curriculares.
         </p>
 
         <form onSubmit={iniciarSesion} className="space-y-5">

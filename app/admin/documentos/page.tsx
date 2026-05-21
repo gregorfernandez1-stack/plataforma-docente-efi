@@ -3,182 +3,177 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import { useRouter } from "next/navigation";
 
-export default function AdminDocumentos() {
-  const [titulo, setTitulo] = useState("");
-  const [tipo, setTipo] = useState("Diseño curricular");
-  const [descripcion, setDescripcion] = useState("");
-  const [archivo, setArchivo] = useState<File | null>(null);
-  const [subiendo, setSubiendo] = useState(false);
-  const [mensaje, setMensaje] = useState("");
-  const [documentos, setDocumentos] = useState<any[]>([]);
+export default function AdminPage() {
+  const router = useRouter();
+  const [pendientes, setPendientes] = useState(0);
 
   useEffect(() => {
-    cargarDocumentos();
+    cargarPendientes();
   }, []);
 
-  const cargarDocumentos = async () => {
-    const { data, error } = await supabase
-      .from("documentos_curriculares")
-      .select("*")
-      .order("created_at", { ascending: false });
+  const cargarPendientes = async () => {
+    const { count, error } = await supabase
+      .from("solicitudes_docentes")
+      .select("*", { count: "exact", head: true })
+      .eq("estado", "pendiente");
 
     if (error) {
-      console.error("Error cargando documentos:", error.message);
-      setDocumentos([]);
+      console.error("Error cargando solicitudes pendientes:", error);
       return;
     }
 
-    setDocumentos(data || []);
+    setPendientes(count || 0);
   };
 
-  const subirDocumento = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!titulo || !tipo || !archivo) {
-      setMensaje("Completa el título, tipo y selecciona un archivo.");
-      return;
-    }
-
-    setSubiendo(true);
-    setMensaje("");
-
-    const nombreArchivo = `${Date.now()}-${archivo.name}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("documentos-curriculares")
-      .upload(nombreArchivo, archivo);
-
-    if (uploadError) {
-      setMensaje(`Error al subir el archivo: ${uploadError.message}`);
-      setSubiendo(false);
-      return;
-    }
-
-    const { data: publicUrlData } = supabase.storage
-      .from("documentos-curriculares")
-      .getPublicUrl(nombreArchivo);
-
-    const { error: insertError } = await supabase
-      .from("documentos_curriculares")
-      .insert([
-        {
-          titulo,
-          tipo,
-          descripcion,
-          url: publicUrlData.publicUrl,
-        },
-      ]);
-
-    if (insertError) {
-      setMensaje(`El archivo subió, pero no se guardó: ${insertError.message}`);
-      setSubiendo(false);
-      return;
-    }
-
-    setTitulo("");
-    setTipo("Diseño curricular");
-    setDescripcion("");
-    setArchivo(null);
-    setMensaje("Documento subido correctamente.");
-    setSubiendo(false);
-    cargarDocumentos();
+  const cerrarSesion = async () => {
+    await supabase.auth.signOut();
+    router.push("/");
   };
 
   return (
-    <main className="min-h-screen bg-[#F5F7FA] px-6 py-10">
-      <section className="max-w-5xl mx-auto bg-white p-8 rounded-2xl shadow">
-        <Link
-          href="/admin"
-          className="inline-block mb-6 bg-gray-200 hover:bg-gray-300 px-4 py-2 rounded-lg font-semibold"
-        >
-          ← Volver al panel admin
-        </Link>
+    <main className="flex min-h-screen bg-[#F5F7FA]">
+      <aside className="w-[260px] bg-[#003B7A] text-white p-6">
+        <h2 className="text-2xl font-bold mb-8">Administrador</h2>
 
-        <h1 className="text-3xl font-bold text-[#003B7A] mb-2">
-          Documentos curriculares
-        </h1>
+        <nav className="grid gap-3">
+          <Link href="/admin" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold">
+            Panel principal
+          </Link>
 
-        <p className="text-gray-600 mb-8">
-          Sube documentos para que los docentes puedan consultarlos desde la
-          biblioteca curricular.
-        </p>
+          <Link href="/admin/solicitudes" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold flex items-center justify-between">
+            <span>Solicitudes docentes</span>
+            {pendientes > 0 && (
+              <span className="bg-red-600 text-white text-xs px-2 py-1 rounded-full">
+                {pendientes}
+              </span>
+            )}
+          </Link>
 
-        <form onSubmit={subirDocumento} className="space-y-5 mb-10">
-          <input
-            type="text"
-            value={titulo}
-            onChange={(e) => setTitulo(e.target.value)}
-            className="w-full border rounded-lg p-3"
-            placeholder="Título del documento"
-          />
+          <Link href="/admin/unidades" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold">
+            Unidades didácticas
+          </Link>
 
-          <select
-            value={tipo}
-            onChange={(e) => setTipo(e.target.value)}
-            className="w-full border rounded-lg p-3"
-          >
-            <option>Diseño curricular</option>
-            <option>Ordenanza</option>
-            <option>Guía didáctica</option>
-            <option>Calendario escolar</option>
-            <option>Normativa MINERD / INEFI</option>
-            <option>Otros documentos</option>
-          </select>
+          <Link href="/admin/documentos" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold">
+            Documentos curriculares
+          </Link>
 
-          <textarea
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
-            className="w-full border rounded-lg p-3"
-            rows={3}
-            placeholder="Descripción"
-          />
-
-          <input
-            type="file"
-            accept=".pdf,.doc,.docx,.ppt,.pptx,.xls,.xlsx"
-            onChange={(e) => setArchivo(e.target.files?.[0] || null)}
-            className="w-full border rounded-lg p-3"
-          />
-
-          {mensaje && <p className="font-semibold text-[#003B7A]">{mensaje}</p>}
+          <Link href="/" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold">
+            Ir al inicio
+          </Link>
 
           <button
-            type="submit"
-            disabled={subiendo}
-            className="bg-[#003B7A] text-white px-6 py-3 rounded-lg font-bold hover:bg-blue-800 disabled:opacity-60"
+            onClick={cerrarSesion}
+            className="bg-red-600 hover:bg-red-700 px-4 py-3 rounded-lg font-bold mt-2"
           >
-            {subiendo ? "Subiendo..." : "Subir documento"}
+            Cerrar sesión
           </button>
-        </form>
+        </nav>
+      </aside>
 
-        <h2 className="text-2xl font-bold text-[#003B7A] mb-4">
-          Documentos subidos
-        </h2>
+      <section className="flex-1 p-10">
+        <div className="bg-white rounded-2xl shadow p-8 mb-8 border border-gray-100">
+          <h1 className="text-4xl font-extrabold text-[#003B7A]">
+            Panel de Administrador
+          </h1>
 
-        {documentos.length === 0 ? (
-          <p className="text-gray-500">No hay documentos registrados.</p>
-        ) : (
-          <div className="grid md:grid-cols-2 gap-4">
-            {documentos.map((doc) => (
-              <a
-                key={doc.id}
-                href={doc.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-4 border rounded-lg hover:bg-gray-100 bg-white"
-              >
-                <h3 className="font-bold text-[#003B7A]">📄 {doc.titulo}</h3>
-                <p className="text-sm text-gray-600">{doc.tipo}</p>
-                {doc.descripcion && (
-                  <p className="text-sm text-gray-500 mt-2">
-                    {doc.descripcion}
-                  </p>
-                )}
-              </a>
-            ))}
+          <p className="text-gray-600 mt-3 max-w-3xl">
+            Administra el Sistema de Planificación en Educación Física por
+            Competencia. Desde aquí puedes aprobar docentes, organizar unidades,
+            temas, secuencias y documentos curriculares.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <div className="bg-white rounded-2xl shadow p-6 border">
+            <p className="text-gray-500 text-sm font-semibold">Módulo activo</p>
+            <h2 className="text-2xl font-extrabold text-[#003B7A] mt-2">
+              Biblioteca curricular
+            </h2>
+            <p className="text-gray-600 text-sm mt-2">
+              Administra unidades didácticas, temas, secuencias y documentos.
+            </p>
           </div>
-        )}
+
+          <div className="bg-white rounded-2xl shadow p-6 border">
+            <p className="text-gray-500 text-sm font-semibold">
+              Solicitudes pendientes
+            </p>
+            <h2 className="text-3xl font-extrabold text-red-600 mt-2">
+              {pendientes}
+            </h2>
+            <p className="text-gray-600 text-sm mt-2">
+              Docentes esperando aprobación.
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow p-6 border">
+            <p className="text-gray-500 text-sm font-semibold">Acceso</p>
+            <h2 className="text-2xl font-extrabold text-[#003B7A] mt-2">
+              Administrador
+            </h2>
+            <p className="text-gray-600 text-sm mt-2">
+              Gestión general del sistema.
+            </p>
+          </div>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6">
+          <Link href="/admin/solicitudes" className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition">
+            <div className="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center mb-5">
+              <span className="text-2xl">🧑‍🏫</span>
+            </div>
+
+            <h3 className="text-2xl font-bold text-[#003B7A]">
+              Solicitudes docentes
+            </h3>
+
+            <p className="text-gray-600 mt-2">
+              Revisa las solicitudes de docentes registrados y aprueba el acceso.
+            </p>
+
+            <span className="inline-flex items-center gap-2 mt-5 bg-[#003B7A] text-white px-5 py-3 rounded-xl font-bold">
+              Ver solicitudes
+            </span>
+          </Link>
+
+          <Link href="/admin/unidades" className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition">
+            <div className="w-14 h-14 bg-[#003B7A]/10 rounded-xl flex items-center justify-center mb-5">
+              <span className="text-2xl">📚</span>
+            </div>
+
+            <h3 className="text-2xl font-bold text-[#003B7A]">
+              Unidades didácticas
+            </h3>
+
+            <p className="text-gray-600 mt-2">
+              Crear, editar y organizar unidades, temas y secuencias.
+            </p>
+
+            <span className="inline-block mt-5 bg-[#003B7A] text-white px-5 py-3 rounded-xl font-bold">
+              Gestionar unidades
+            </span>
+          </Link>
+
+          <Link href="/admin/documentos" className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition">
+            <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-5">
+              <span className="text-2xl">📄</span>
+            </div>
+
+            <h3 className="text-2xl font-bold text-[#003B7A]">
+              Documentos curriculares
+            </h3>
+
+            <p className="text-gray-600 mt-2">
+              Subir diseño curricular, ordenanzas, guías, calendario y normativas.
+            </p>
+
+            <span className="inline-block mt-5 bg-[#003B7A] text-white px-5 py-3 rounded-xl font-bold">
+              Gestionar documentos
+            </span>
+          </Link>
+        </div>
       </section>
     </main>
   );
