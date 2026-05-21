@@ -32,14 +32,42 @@ export default function NuevaPlanificacion() {
     (unidad: any) => String(unidad.id) === unidadSeleccionada
   );
 
-  const obtenerSecuencias = () => {
-    if (!unidadData?.secuencias) return [];
+  const limpiarLista = (valor: any): string[] => {
+    if (!valor) return [];
 
-    if (Array.isArray(unidadData.secuencias)) return unidadData.secuencias;
+    if (Array.isArray(valor)) return valor;
 
-    if (typeof unidadData.secuencias === "string") {
+    if (typeof valor === "string") {
       try {
-        const parsed = JSON.parse(unidadData.secuencias);
+        const parsed = JSON.parse(valor);
+        if (Array.isArray(parsed)) return parsed;
+      } catch {
+        return valor
+          .replace(/^\[/, "")
+          .replace(/\]$/, "")
+          .replaceAll('"', "")
+          .split(",")
+          .map((item) => item.trim())
+          .filter(Boolean);
+      }
+    }
+
+    return [String(valor)];
+  };
+
+  const obtenerTemas = () => {
+    if (!unidadData?.temas_nuevo) return [];
+
+    if (Array.isArray(unidadData.temas_nuevo)) return unidadData.temas_nuevo;
+
+    if (typeof unidadData.temas_nuevo === "string") {
+      try {
+        const parsed = JSON.parse(unidadData.temas_nuevo);
+
+        if (typeof parsed === "string") {
+          return JSON.parse(parsed);
+        }
+
         return Array.isArray(parsed) ? parsed : [];
       } catch {
         return [];
@@ -49,7 +77,7 @@ export default function NuevaPlanificacion() {
     return [];
   };
 
-  const secuenciasUnidad = obtenerSecuencias();
+  const temasUnidad = obtenerTemas();
 
   useEffect(() => {
     cargarPerfilDocente();
@@ -151,7 +179,7 @@ export default function NuevaPlanificacion() {
         body: JSON.stringify({
           nivel,
           grado,
-          unidad: unidadData.titulo || "",
+          unidad: unidadData.titulo || unidadData.unidad || "",
           centro,
           docente,
           ejeTransversal: unidadData.eje_transversal || "",
@@ -163,6 +191,7 @@ export default function NuevaPlanificacion() {
             procedimental: unidadData.contenidos_procedimentales || "",
             actitudinal: unidadData.contenidos_actitudinales || "",
           },
+          temas: temasUnidad,
         }),
       });
 
@@ -233,7 +262,7 @@ export default function NuevaPlanificacion() {
         periodo,
         tiempo_asignado: tiempoAsignado,
         fecha,
-        unidad: unidadData.titulo || "",
+        unidad: unidadData.titulo || unidadData.unidad || "",
         situacion: situacionFinal,
         eje_transversal: unidadData.eje_transversal || "",
         estrategias: unidadData.estrategias || "",
@@ -246,7 +275,7 @@ export default function NuevaPlanificacion() {
           procedimental: unidadData.contenidos_procedimentales || "",
           actitudinal: unidadData.contenidos_actitudinales || "",
         },
-        secuencias: secuenciasUnidad,
+        secuencias: temasUnidad,
       },
     ]);
 
@@ -270,13 +299,11 @@ export default function NuevaPlanificacion() {
     <main className="flex min-h-screen bg-[#F5F7FA] font-sans">
       <aside className="w-[260px] bg-[#1E6091] text-white p-6 flex flex-col justify-between">
         <div>
-          <h2 className="text-2xl font-bold mb-2">
-  Docente
-</h2>
+          <h2 className="text-2xl font-bold mb-2">Docente</h2>
 
-<p className="text-white/70 text-sm mb-8">
-  Educación Física por Competencia
-</p>
+          <p className="text-white/70 text-sm mb-8">
+            Educación Física por Competencia
+          </p>
 
           <nav className="flex flex-col gap-3">
             <Link
@@ -322,12 +349,13 @@ export default function NuevaPlanificacion() {
           <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold text-[#1E6091]">
-  Sistema de Planificación en Educación Física por Competencia
-</h1>
+                Sistema de Planificación en Educación Física por Competencia
+              </h1>
 
-<p className="text-gray-700 mt-2">
-  Crea y organiza tus planificaciones por competencias, temas y secuencias.
-</p>
+              <p className="text-gray-700 mt-2">
+                Crea y organiza tus planificaciones por competencias, temas y
+                secuencias.
+              </p>
             </div>
 
             <Link
@@ -488,7 +516,7 @@ export default function NuevaPlanificacion() {
 
               {unidadesDelGrado.map((unidad: any) => (
                 <option key={unidad.id} value={String(unidad.id)}>
-                  {unidad.titulo}
+                  {unidad.titulo || unidad.unidad || "Unidad sin título"}
                 </option>
               ))}
             </select>
@@ -500,6 +528,7 @@ export default function NuevaPlanificacion() {
                 <h2 className="text-xl font-bold">
                   Aspectos curriculares de la unidad
                 </h2>
+
                 <p className="text-sm text-white/80 mt-1">
                   Información cargada desde la biblioteca curricular.
                 </p>
@@ -508,7 +537,9 @@ export default function NuevaPlanificacion() {
               <div className="p-6 grid gap-5">
                 <div>
                   <h3 className="font-bold text-[#1E6091] mb-2">Unidad</h3>
-                  <p className="text-gray-700">{unidadData.titulo}</p>
+                  <p className="text-gray-700">
+                    {unidadData.titulo || unidadData.unidad}
+                  </p>
                 </div>
 
                 <div>
@@ -542,12 +573,11 @@ export default function NuevaPlanificacion() {
                   </h3>
 
                   <ul className="list-disc ml-6 text-gray-700">
-                    {(Array.isArray(unidadData.grupos_competencias)
-                      ? unidadData.grupos_competencias
-                      : []
-                    ).map((grupo: string, index: number) => (
-                      <li key={index}>{grupo}</li>
-                    ))}
+                    {limpiarLista(unidadData.grupos_competencias).map(
+                      (grupo: string, index: number) => (
+                        <li key={index}>{grupo}</li>
+                      )
+                    )}
                   </ul>
                 </div>
 
@@ -557,12 +587,11 @@ export default function NuevaPlanificacion() {
                   </h3>
 
                   <ul className="list-disc ml-6 text-gray-700">
-                    {(Array.isArray(unidadData.areas_articuladas)
-                      ? unidadData.areas_articuladas
-                      : []
-                    ).map((area: string, index: number) => (
-                      <li key={index}>{area}</li>
-                    ))}
+                    {limpiarLista(unidadData.areas_articuladas).map(
+                      (area: string, index: number) => (
+                        <li key={index}>{area}</li>
+                      )
+                    )}
                   </ul>
                 </div>
 
@@ -605,6 +634,7 @@ export default function NuevaPlanificacion() {
                   <h3 className="font-bold text-[#1E6091] mb-2">
                     Indicadores de logro
                   </h3>
+
                   <p className="text-gray-700 whitespace-pre-line">
                     {unidadData.indicadores_logro}
                   </p>
@@ -616,9 +646,10 @@ export default function NuevaPlanificacion() {
                       <h2 className="text-xl font-bold text-[#1E6091]">
                         Situación de aprendizaje
                       </h2>
+
                       <p className="text-sm text-gray-700 mt-1">
-                        Genera una situación alineada a competencias, contenidos,
-temas y secuencias.
+                        Genera una situación alineada a competencias,
+                        contenidos, temas y secuencias.
                       </p>
                     </div>
 
@@ -629,8 +660,8 @@ temas y secuencias.
                       className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white px-5 py-3 rounded-lg font-bold"
                     >
                       {generandoSituacion
-  ? "Generando..."
-  : "Generar situación con IA"}
+                        ? "Generando..."
+                        : "Generar situación con IA"}
                     </button>
                   </div>
 
@@ -645,33 +676,101 @@ temas y secuencias.
 
                 <div>
                   <h3 className="font-bold text-[#1E6091] mb-3">
-  Temas y secuencias
-</h3>
+                    Temas y secuencias
+                  </h3>
 
-                  {secuenciasUnidad.length === 0 ? (
+                  {temasUnidad.length === 0 ? (
                     <p className="text-gray-500">
                       Esta unidad no tiene temas registrados.
                     </p>
                   ) : (
-                    <div className="grid gap-4">
-                      {secuenciasUnidad.map((secuencia: any, index: number) => (
+                    <div className="grid gap-5">
+                      {temasUnidad.map((tema: any, temaIndex: number) => (
                         <div
-                          key={index}
+                          key={temaIndex}
                           className="border rounded-xl overflow-hidden"
                         >
                           <div className="bg-blue-50 px-4 py-3 font-bold text-[#1E6091]">
-  Tema {index + 1}: {secuencia.nombre}
-</div>
+                            Tema {temaIndex + 1}: {tema.tema}
+                          </div>
 
-<ul className="list-disc ml-8 py-4 pr-4 text-gray-700">
-  {(secuencia.actividades || []).map(
-    (actividad: string, i: number) => (
-      <li key={i}>
-        <strong>Secuencia {i + 1}:</strong> {actividad}
-      </li>
-    )
-  )}
-</ul>
+                          <div className="p-4 space-y-4">
+                            {tema.secuencias?.map(
+                              (secuencia: any, secIndex: number) => (
+                                <div
+                                  key={secIndex}
+                                  className="bg-gray-50 border rounded-xl p-4"
+                                >
+                                  <h4 className="font-bold text-[#1E6091] mb-3">
+                                    {secuencia.titulo ||
+                                      `Secuencia ${secIndex + 1}`}
+                                  </h4>
+
+                                  {secuencia.intencion_pedagogica && (
+                                    <p className="mb-3">
+                                      <strong>Intención pedagógica:</strong>{" "}
+                                      {secuencia.intencion_pedagogica}
+                                    </p>
+                                  )}
+
+                                  <p className="mb-3">
+                                    <strong>Estrategias:</strong>{" "}
+                                    {secuencia.estrategias ||
+                                      unidadData.estrategias ||
+                                      "No registrado"}
+                                  </p>
+
+                                  <div className="grid md:grid-cols-3 gap-4">
+                                    <Momento
+                                      titulo="Inicio"
+                                      datos={secuencia.inicio}
+                                    />
+
+                                    <Momento
+                                      titulo="Desarrollo"
+                                      datos={secuencia.desarrollo}
+                                    />
+
+                                    <Momento
+                                      titulo="Cierre"
+                                      datos={secuencia.cierre}
+                                    />
+                                  </div>
+
+                                  <div className="grid md:grid-cols-2 gap-4 mt-4">
+                                    <div className="bg-white border rounded-lg p-4">
+                                      <h5 className="font-bold text-gray-800 mb-2">
+                                        Evaluación
+                                      </h5>
+
+                                      <p>
+                                        <strong>Técnica:</strong>{" "}
+                                        {secuencia.evaluacion?.tecnica ||
+                                          "No registrado"}
+                                      </p>
+
+                                      <p>
+                                        <strong>Instrumento:</strong>{" "}
+                                        {secuencia.evaluacion?.instrumento ||
+                                          "No registrado"}
+                                      </p>
+                                    </div>
+
+                                    <div className="bg-white border rounded-lg p-4">
+                                      <h5 className="font-bold text-gray-800 mb-2">
+                                        Acomodación curricular
+                                      </h5>
+
+                                      <p>
+                                        {secuencia.acomodacion ||
+                                          "No registrada"}
+                                      </p>
+                                    </div>
+                                  </div>
+                                </div>
+                              )
+                            )}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -699,5 +798,35 @@ temas y secuencias.
         </div>
       </section>
     </main>
+  );
+}
+
+function Momento({ titulo, datos }: { titulo: string; datos: any }) {
+  return (
+    <div className="bg-white border rounded-lg p-4">
+      <h5 className="font-bold text-gray-800 mb-2">{titulo}</h5>
+
+      <p>
+        <strong>Tiempo:</strong> {datos?.tiempo || "No registrado"} min
+      </p>
+
+      <p>
+        <strong>Actividades:</strong>{" "}
+        {datos?.actividades || "No registrado"}
+      </p>
+
+      <p>
+        <strong>Evidencia:</strong> {datos?.evidencia || "No registrada"}
+      </p>
+
+      <p>
+        <strong>Metacognición:</strong>{" "}
+        {datos?.metacognicion || "No registrada"}
+      </p>
+
+      <p>
+        <strong>Recursos:</strong> {datos?.recursos || "No registrados"}
+      </p>
+    </div>
   );
 }
