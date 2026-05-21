@@ -40,21 +40,47 @@ const momentoVacio = (tiempo: string): Momento => ({
   recursos: "",
 });
 
-const nuevaSecuencia = (numero: number): SecuenciaDidactica => ({
-  titulo: `Secuencia ${numero}`,
-  intencion_pedagogica: "",
-  estrategias: "",
-  inicio: momentoVacio("10"),
-  desarrollo: momentoVacio("25"),
-  cierre: momentoVacio("10"),
-  evaluacion: {
-    tecnica: "Observación directa",
-    instrumento: "Registro anecdótico",
-  },
-  acomodacion:
-    "Adecuación de actividades según las necesidades individuales del estudiante.",
-});
+const nuevaSecuencia = (numero:number):SecuenciaDidactica=>({
 
+titulo:`Secuencia ${numero}`,
+
+intencion_pedagogica:"",
+
+estrategias:"Juego, aprendizaje cooperativo y resolución de problemas",
+
+inicio:{
+tiempo:"10",
+actividades:"Retroalimentación y activación física",
+evidencia:"Participa activamente",
+metacognicion:"¿Qué recuerdas de la clase anterior?",
+recursos:"Conos, silbato"
+},
+
+desarrollo:{
+tiempo:"25",
+actividades:"",
+evidencia:"Ejecuta actividades motrices",
+metacognicion:"¿Qué aprendiste hoy?",
+recursos:"Pelotas, aros, cuerdas"
+},
+
+cierre:{
+tiempo:"10",
+actividades:"Socialización y cierre",
+evidencia:"Comparte experiencias",
+metacognicion:"¿Qué fue fácil o difícil?",
+recursos:"Pizarra"
+},
+
+evaluacion:{
+tecnica:"Observación directa",
+instrumento:"Registro anecdótico"
+},
+
+acomodacion:
+"Adecuación de actividades según necesidades individuales del estudiante."
+
+});
 export default function EditarSecuencias() {
   const { id } = useParams();
   const router = useRouter();
