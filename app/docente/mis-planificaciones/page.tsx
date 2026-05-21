@@ -56,10 +56,19 @@ export default function MisPlanificaciones() {
     <main className="flex min-h-screen bg-[#F5F7FA] font-sans">
       <aside className="w-[260px] bg-[#1E6091] text-white p-6 flex flex-col justify-between">
         <div>
-          <h2 className="text-2xl font-bold mb-10">Docente</h2>
+          <div className="mb-8">
+            <h2 className="text-2xl font-bold mb-2">Docente</h2>
+
+            <p className="text-white/70 text-sm">
+              Educación Física por Competencia
+            </p>
+          </div>
 
           <nav className="flex flex-col gap-3">
-            <Link href="/docente" className="hover:bg-[#144d74] px-4 py-2 rounded-lg">
+            <Link
+              href="/docente"
+              className="hover:bg-[#144d74] px-4 py-2 rounded-lg"
+            >
               Panel
             </Link>
 
@@ -99,10 +108,12 @@ export default function MisPlanificaciones() {
           <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h1 className="text-4xl font-bold text-[#1E6091] mb-2">
-                Mis planificaciones
+                Sistema de Planificación en Educación Física por Competencia
               </h1>
+
               <p className="text-gray-700">
-                Consulta, edita, elimina o personaliza tus planificaciones guardadas.
+                Consulta, edita y organiza tus planificaciones por competencias,
+                temas y secuencias.
               </p>
             </div>
 
@@ -123,8 +134,10 @@ export default function MisPlanificaciones() {
               <h2 className="text-2xl font-bold text-[#1E6091] mb-3">
                 No hay planificaciones guardadas
               </h2>
+
               <p className="text-gray-700 mb-6">
-                Crea tu primera planificación para comenzar a organizar tus clases.
+                Crea tu primera planificación y organiza unidades, temas y
+                secuencias.
               </p>
 
               <Link
@@ -184,7 +197,7 @@ export default function MisPlanificaciones() {
                       href={`/docente/mis-planificaciones/secuencias/${p.id}`}
                       className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-bold"
                     >
-                      Secuencias
+                      Temas
                     </Link>
 
                     <button
