@@ -35,7 +35,7 @@ export default async function UnidadDetalle({
     );
   }
 
-  const limpiarSecuencias = (valor: any) => {
+  const obtenerTemas = (valor: any) => {
     if (!valor) return [];
 
     try {
@@ -48,7 +48,7 @@ export default async function UnidadDetalle({
           return JSON.parse(parsed);
         }
 
-        return parsed;
+        return Array.isArray(parsed) ? parsed : [];
       }
     } catch {
       return [];
@@ -57,7 +57,7 @@ export default async function UnidadDetalle({
     return [];
   };
 
-  const secuencias = limpiarSecuencias(unidad.secuencias);
+  const temas = obtenerTemas(unidad.temas_nuevo);
 
   return (
     <main className="min-h-screen bg-[#F5F7FA] px-6 py-10">
@@ -83,39 +83,123 @@ export default async function UnidadDetalle({
             Aspectos curriculares
           </h2>
 
-          <p><b>Grupos de competencias:</b> {unidad.grupos_competencias || "No registrado"}</p>
-          <p><b>Competencias específicas:</b> {unidad.competencias_especificas || "No registrado"}</p>
-          <p><b>Eje transversal:</b> {unidad.eje_transversal || "No registrado"}</p>
-          <p><b>Áreas articuladas:</b> {unidad.areas_articuladas || "No registrado"}</p>
-          <p><b>Estrategias:</b> {unidad.estrategias || "No registrado"}</p>
-          <p><b>Contenidos conceptuales:</b> {unidad.contenidos_conceptuales || "No registrado"}</p>
-          <p><b>Contenidos procedimentales:</b> {unidad.contenidos_procedimentales || "No registrado"}</p>
-          <p><b>Contenidos actitudinales:</b> {unidad.contenidos_actitudinales || "No registrado"}</p>
-          <p><b>Indicadores de logro:</b> {unidad.indicadores_logro || "No registrado"}</p>
+          <p>
+            <b>Grupos de competencias:</b>{" "}
+            {unidad.grupos_competencias || "No registrado"}
+          </p>
+          <p>
+            <b>Competencias específicas:</b>{" "}
+            {unidad.competencias_especificas || "No registrado"}
+          </p>
+          <p>
+            <b>Eje transversal:</b>{" "}
+            {unidad.eje_transversal || "No registrado"}
+          </p>
+          <p>
+            <b>Áreas articuladas:</b>{" "}
+            {unidad.areas_articuladas || "No registrado"}
+          </p>
+          <p>
+            <b>Estrategias:</b> {unidad.estrategias || "No registrado"}
+          </p>
+          <p>
+            <b>Contenidos conceptuales:</b>{" "}
+            {unidad.contenidos_conceptuales || "No registrado"}
+          </p>
+          <p>
+            <b>Contenidos procedimentales:</b>{" "}
+            {unidad.contenidos_procedimentales || "No registrado"}
+          </p>
+          <p>
+            <b>Contenidos actitudinales:</b>{" "}
+            {unidad.contenidos_actitudinales || "No registrado"}
+          </p>
+          <p>
+            <b>Indicadores de logro:</b>{" "}
+            {unidad.indicadores_logro || "No registrado"}
+          </p>
         </div>
 
         <div className="mb-8 bg-green-50 p-6 rounded-xl border">
-         <h2 className="text-xl font-bold text-green-700 mb-4">
-  Temas y secuencias
-</h2>
+          <h2 className="text-xl font-bold text-green-700 mb-4">
+            Temas y secuencias
+          </h2>
 
-          {secuencias.length === 0 ? (
-            <p>No hay secuencias registradas.</p>
+          {temas.length === 0 ? (
+            <p>No hay temas registrados.</p>
           ) : (
-            <div className="space-y-4">
-              {secuencias.map((sec: any, index: number) => (
-                <div key={index} className="bg-white p-4 rounded-lg border">
-                <h3 className="font-bold text-green-700 mb-2">
-  Tema {index + 1}: {sec.nombre}
-</h3>
+            <div className="space-y-6">
+              {temas.map((tema: any, temaIndex: number) => (
+                <div
+                  key={temaIndex}
+                  className="bg-white p-5 rounded-xl border"
+                >
+                  <h3 className="font-bold text-[#003B7A] text-xl mb-4">
+                    Tema {temaIndex + 1}: {tema.tema}
+                  </h3>
 
-<ul className="list-disc pl-6">
-  {sec.actividades?.map((act: string, i: number) => (
-    <li key={i}>
-      <strong>Secuencia {i + 1}:</strong> {act}
-    </li>
-  ))}
-</ul>
+                  {tema.secuencias?.length > 0 ? (
+                    <div className="space-y-5">
+                      {tema.secuencias.map((sec: any, secIndex: number) => (
+                        <div
+                          key={secIndex}
+                          className="bg-green-50 border rounded-xl p-5"
+                        >
+                          <h4 className="font-bold text-green-800 text-lg mb-3">
+                            {sec.titulo || `Secuencia ${secIndex + 1}`}
+                          </h4>
+
+                          {sec.intencion_pedagogica && (
+                            <p className="mb-3">
+                              <b>Intención pedagógica:</b>{" "}
+                              {sec.intencion_pedagogica}
+                            </p>
+                          )}
+
+                          <p className="mb-3">
+                            <b>Estrategias:</b>{" "}
+                            {sec.estrategias || unidad.estrategias || "No registrado"}
+                          </p>
+
+                          <div className="grid md:grid-cols-3 gap-4 mb-4">
+                            <Momento titulo="Inicio" datos={sec.inicio} />
+                            <Momento titulo="Desarrollo" datos={sec.desarrollo} />
+                            <Momento titulo="Cierre" datos={sec.cierre} />
+                          </div>
+
+                          <div className="bg-white rounded-lg border p-4 mb-3">
+                            <h5 className="font-bold text-gray-800 mb-2">
+                              Evaluación
+                            </h5>
+
+                            <p>
+                              <b>Técnica:</b>{" "}
+                              {sec.evaluacion?.tecnica || "No registrado"}
+                            </p>
+
+                            <p>
+                              <b>Instrumento:</b>{" "}
+                              {sec.evaluacion?.instrumento || "No registrado"}
+                            </p>
+                          </div>
+
+                          <div className="bg-white rounded-lg border p-4">
+                            <h5 className="font-bold text-gray-800 mb-2">
+                              Acomodación curricular
+                            </h5>
+
+                            <p>
+                              {sec.acomodacion || "No registrada"}
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-500">
+                      Este tema no tiene secuencias registradas.
+                    </p>
+                  )}
                 </div>
               ))}
             </div>
@@ -130,5 +214,33 @@ export default async function UnidadDetalle({
         </Link>
       </section>
     </main>
+  );
+}
+
+function Momento({ titulo, datos }: { titulo: string; datos: any }) {
+  return (
+    <div className="bg-white rounded-lg border p-4">
+      <h5 className="font-bold text-gray-800 mb-2">{titulo}</h5>
+
+      <p>
+        <b>Tiempo:</b> {datos?.tiempo || "No registrado"} min
+      </p>
+
+      <p>
+        <b>Actividades:</b> {datos?.actividades || "No registrado"}
+      </p>
+
+      <p>
+        <b>Evidencia:</b> {datos?.evidencia || "No registrada"}
+      </p>
+
+      <p>
+        <b>Metacognición:</b> {datos?.metacognicion || "No registrada"}
+      </p>
+
+      <p>
+        <b>Recursos:</b> {datos?.recursos || "No registrados"}
+      </p>
+    </div>
   );
 }
