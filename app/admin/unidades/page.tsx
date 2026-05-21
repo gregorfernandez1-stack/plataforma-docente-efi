@@ -19,14 +19,21 @@ export default function UnidadesPage() {
       .order("created_at", { ascending: false });
 
     if (!error && data) setUnidades(data);
+
     setLoading(false);
   };
 
   const eliminarUnidad = async (id: string) => {
-    const confirmar = confirm("¿Seguro que deseas eliminar esta unidad?");
+    const confirmar = confirm(
+      "¿Seguro que deseas eliminar esta unidad?"
+    );
+
     if (!confirmar) return;
 
-    const { error } = await supabase.from("unidades").delete().eq("id", id);
+    const { error } = await supabase
+      .from("unidades")
+      .delete()
+      .eq("id", id);
 
     if (error) {
       alert("Error al eliminar");
@@ -40,7 +47,9 @@ export default function UnidadesPage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-[#F5F7FA] p-8">
-        <p className="text-[#003B7A] font-semibold">Cargando unidades...</p>
+        <p className="text-[#003B7A] font-semibold">
+          Cargando unidades...
+        </p>
       </main>
     );
   }
@@ -59,10 +68,11 @@ export default function UnidadesPage() {
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
             <div>
               <h1 className="text-3xl font-extrabold text-[#003B7A]">
-                Biblioteca curricular
+                Sistema de Planificación en Educación Física por Competencia
               </h1>
+
               <p className="text-gray-600 mt-2">
-                Gestiona las unidades didácticas, secuencias, actividades y
+                Gestiona las unidades didácticas, temas, secuencias y
                 aspectos curriculares que utilizarán los docentes.
               </p>
             </div>
@@ -77,29 +87,53 @@ export default function UnidadesPage() {
         </div>
 
         <div className="grid md:grid-cols-3 gap-5 mb-8">
+
           <div className="bg-white rounded-xl shadow p-5 border">
-            <p className="text-gray-500 text-sm font-semibold">Total</p>
+            <p className="text-gray-500 text-sm font-semibold">
+              Total
+            </p>
+
             <h2 className="text-3xl font-extrabold text-[#003B7A]">
               {unidades.length}
             </h2>
-            <p className="text-gray-600 text-sm">unidades registradas</p>
+
+            <p className="text-gray-600 text-sm">
+              unidades registradas
+            </p>
           </div>
 
           <div className="bg-white rounded-xl shadow p-5 border">
-            <p className="text-gray-500 text-sm font-semibold">Niveles</p>
+            <p className="text-gray-500 text-sm font-semibold">
+              Niveles
+            </p>
+
             <h2 className="text-3xl font-extrabold text-[#003B7A]">
-              {new Set(unidades.map((u) => u.nivel).filter(Boolean)).size}
+              {new Set(
+                unidades.map((u) => u.nivel).filter(Boolean)
+              ).size}
             </h2>
-            <p className="text-gray-600 text-sm">niveles con contenido</p>
+
+            <p className="text-gray-600 text-sm">
+              niveles con contenido
+            </p>
           </div>
 
           <div className="bg-white rounded-xl shadow p-5 border">
-            <p className="text-gray-500 text-sm font-semibold">Grados</p>
+            <p className="text-gray-500 text-sm font-semibold">
+              Grados
+            </p>
+
             <h2 className="text-3xl font-extrabold text-[#003B7A]">
-              {new Set(unidades.map((u) => u.grado).filter(Boolean)).size}
+              {new Set(
+                unidades.map((u) => u.grado).filter(Boolean)
+              ).size}
             </h2>
-            <p className="text-gray-600 text-sm">grados configurados</p>
+
+            <p className="text-gray-600 text-sm">
+              grados configurados
+            </p>
           </div>
+
         </div>
 
         {unidades.length === 0 ? (
@@ -107,8 +141,10 @@ export default function UnidadesPage() {
             <h2 className="text-2xl font-bold text-[#003B7A] mb-2">
               No hay unidades creadas
             </h2>
+
             <p className="text-gray-600 mb-6">
-              Comienza creando la primera unidad curricular de Educación Física.
+              Comienza creando la primera unidad curricular de
+              Educación Física.
             </p>
 
             <Link
@@ -126,7 +162,9 @@ export default function UnidadesPage() {
                 className="bg-white rounded-2xl shadow border border-gray-100 p-6 hover:shadow-lg transition"
               >
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-5">
+
                   <div className="flex-1">
+
                     <div className="flex flex-wrap gap-2 mb-3">
                       <span className="bg-blue-50 text-[#003B7A] px-3 py-1 rounded-full text-sm font-bold">
                         {unidad.nivel || "Nivel no definido"}
@@ -142,10 +180,12 @@ export default function UnidadesPage() {
                     </h2>
 
                     <div className="grid md:grid-cols-2 gap-4 mt-4 text-sm">
+
                       <div className="bg-gray-50 p-4 rounded-xl border">
                         <p className="font-bold text-gray-800">
                           Eje transversal
                         </p>
+
                         <p className="text-gray-600 mt-1">
                           {unidad.eje_transversal || "No registrado"}
                         </p>
@@ -155,26 +195,30 @@ export default function UnidadesPage() {
                         <p className="font-bold text-gray-800">
                           Estrategias
                         </p>
+
                         <p className="text-gray-600 mt-1">
                           {unidad.estrategias || "No registradas"}
                         </p>
                       </div>
+
                     </div>
 
                     <div className="mt-4 bg-gray-50 p-4 rounded-xl border">
                       <p className="font-bold text-gray-800">
                         Competencias específicas
                       </p>
+
                       <p className="text-gray-600 mt-1">
                         {unidad.competencias_especificas
-                          ? unidad.competencias_especificas.slice(0, 220) +
-                            "..."
+                          ? unidad.competencias_especificas.slice(0,220) + "..."
                           : "No registradas"}
                       </p>
                     </div>
+
                   </div>
 
                   <div className="flex md:flex-col gap-3">
+
                     <Link
                       href={`/admin/unidades/editar/${unidad.id}`}
                       className="bg-[#003B7A] hover:bg-[#002F63] text-white px-5 py-3 rounded-xl font-bold text-center"
@@ -188,7 +232,9 @@ export default function UnidadesPage() {
                     >
                       Eliminar
                     </button>
+
                   </div>
+
                 </div>
               </section>
             ))}
