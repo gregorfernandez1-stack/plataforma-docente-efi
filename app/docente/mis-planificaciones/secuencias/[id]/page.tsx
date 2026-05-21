@@ -40,13 +40,39 @@ const momentoVacio = (tiempo: string): Momento => ({
   recursos: "",
 });
 
-const nuevaSecuencia = (numero:number):SecuenciaDidactica=>({
+const generarIntencionAutomatica = (numero:number)=>{
+
+const plantillas=[
+
+"Desarrollar habilidades motrices mediante experiencias prácticas que favorezcan la participación activa y el aprendizaje significativo.",
+
+"Favorecer la comprensión y aplicación de los contenidos a través de actividades motrices orientadas al desarrollo de competencias.",
+
+"Promover experiencias de aprendizaje que permitan fortalecer habilidades motrices, participación y trabajo colaborativo.",
+
+"Estimular el desarrollo integral mediante situaciones motrices que faciliten la comprensión y aplicación de los contenidos trabajados.",
+
+"Potenciar la participación de los estudiantes mediante experiencias corporales que favorezcan el aprendizaje y la construcción de competencias.",
+
+"Fortalecer capacidades motrices y cognitivas a través de estrategias prácticas que incentiven la exploración y la participación.",
+
+"Propiciar situaciones de aprendizaje orientadas al desarrollo de habilidades motrices y al fortalecimiento de competencias específicas."
+
+];
+
+return plantillas[numero % plantillas.length];
+
+};
+
+const nuevaSecuencia=(numero:number):SecuenciaDidactica=>({
 
 titulo:`Secuencia ${numero}`,
 
-intencion_pedagogica:"",
+intencion_pedagogica:
+generarIntencionAutomatica(numero),
 
-estrategias:"Juego, aprendizaje cooperativo y resolución de problemas",
+estrategias:
+"Juego, aprendizaje cooperativo y resolución de problemas",
 
 inicio:{
 tiempo:"10",
