@@ -372,76 +372,127 @@ export default function DetallePlanificacion() {
           </div>
 
           <h2 className="text-2xl font-bold text-[#003B7A] mb-4">
-            Secuencias
+            Temas y secuencias didácticas
           </h2>
 
           {planificacion.secuencias.length === 0 ? (
-            <p>No hay secuencias registradas.</p>
+            <p>No hay temas registrados.</p>
           ) : (
-            planificacion.secuencias.map((sec: any, i: number) => (
-              <div key={i} className="mb-8 sequence-block">
-                <div className="bg-[#003B7A] text-white text-center py-2 font-bold border border-black">
-                  Secuencia {i + 1}: {sec.nombre || "Sin nombre"}
+            planificacion.secuencias.map((tema: any, temaIndex: number) => (
+              <div key={temaIndex} className="mb-10 sequence-block">
+                <div className="bg-[#003B7A] text-white text-center py-3 font-bold border border-black">
+                  Tema {temaIndex + 1}: {tema.tema || "Sin tema"}
                 </div>
 
-                <table className="w-full text-xs border border-black">
-                  <thead className="bg-[#003B7A] text-white">
-                    <tr>
-                      <th className="border p-2 w-[6%]">Clase</th>
-                      <th className="border p-2 w-[18%]">Tema</th>
-                      <th className="border p-2 w-[18%]">
-                        Intención pedagógica
-                      </th>
-                      <th className="border p-2 w-[18%]">Inicio</th>
-                      <th className="border p-2 w-[18%]">Desarrollo</th>
-                      <th className="border p-2 w-[12%]">Cierre</th>
-                      <th className="border p-2 w-[10%]">Evaluación</th>
-                      <th className="border p-2 w-[10%]">Recursos</th>
-                    </tr>
-                  </thead>
+                {(tema.secuencias || []).map(
+                  (sec: any, secIndex: number) => (
+                    <div key={secIndex} className="border border-black mb-6">
+                      <div className="bg-green-700 text-white px-4 py-2 font-bold">
+                        {sec.titulo || `Secuencia ${secIndex + 1}`}
+                      </div>
 
-                  <tbody>
-                    {(sec.actividades || []).map((act: string, j: number) => (
-                      <tr key={j}>
-                        <td className="border p-2 text-center font-bold">
-                          Clase {j + 1}
-                        </td>
+                      <table className="w-full text-xs border-collapse">
+                        <tbody>
+                          <tr>
+                            <td className="border p-2 font-bold w-[25%]">
+                              Intención pedagógica
+                            </td>
 
-                        <td className="border p-2 font-semibold">
-                          {act || "—"}
-                        </td>
+                            <td className="border p-2">
+                              {sec.intencion_pedagogica || "—"}
+                            </td>
+                          </tr>
 
-                        <td className="border p-2">
-                          Desarrollar habilidades relacionadas con:{" "}
-                          {act || "la actividad propuesta"}.
-                        </td>
+                          <tr>
+                            <td className="border p-2 font-bold">
+                              Estrategias
+                            </td>
 
-                        <td className="border p-2">
-                          Retroalimentación, activación física y recuperación de
-                          saberes previos.
-                        </td>
+                            <td className="border p-2">
+                              {sec.estrategias || "—"}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
 
-                        <td className="border p-2">
-                          Ejecución guiada de la actividad: {act || "—"}, con
-                          acompañamiento docente.
-                        </td>
+                      <table className="w-full text-xs border-collapse">
+                        <thead className="bg-[#003B7A] text-white">
+                          <tr>
+                            <th className="border p-2">Momento</th>
+                            <th className="border p-2">Tiempo</th>
+                            <th className="border p-2">Actividades</th>
+                            <th className="border p-2">Evidencia</th>
+                            <th className="border p-2">Metacognición</th>
+                            <th className="border p-2">Recursos</th>
+                          </tr>
+                        </thead>
 
-                        <td className="border p-2">
-                          Reflexión sobre lo aprendido y cierre de la clase.
-                        </td>
+                        <tbody>
+                          {["inicio", "desarrollo", "cierre"].map(
+                            (momento: any) => {
+                              const datos = sec[momento];
 
-                        <td className="border p-2">
-                          Observación directa, participación y desempeño.
-                        </td>
+                              return (
+                                <tr key={momento}>
+                                  <td className="border p-2 font-bold capitalize">
+                                    {momento}
+                                  </td>
 
-                        <td className="border p-2">
-                          Conos, pelotas, pizarra, silbato y materiales del
-                          entorno.
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                                  <td className="border p-2">
+                                    {datos?.tiempo || "—"} min
+                                  </td>
+
+                                  <td className="border p-2">
+                                    {datos?.actividades || "—"}
+                                  </td>
+
+                                  <td className="border p-2">
+                                    {datos?.evidencia || "—"}
+                                  </td>
+
+                                  <td className="border p-2">
+                                    {datos?.metacognicion || "—"}
+                                  </td>
+
+                                  <td className="border p-2">
+                                    {datos?.recursos || "—"}
+                                  </td>
+                                </tr>
+                              );
+                            }
+                          )}
+                        </tbody>
+                      </table>
+
+                      <table className="w-full text-xs border-collapse">
+                        <tbody>
+                          <tr>
+                            <td className="border p-2 font-bold w-[25%]">
+                              Evaluación
+                            </td>
+
+                            <td className="border p-2">
+                              Técnica: {sec.evaluacion?.tecnica || "—"}
+                              <br />
+                              Instrumento:{" "}
+                              {sec.evaluacion?.instrumento || "—"}
+                            </td>
+                          </tr>
+
+                          <tr>
+                            <td className="border p-2 font-bold">
+                              Acomodación curricular
+                            </td>
+
+                            <td className="border p-2">
+                              {sec.acomodacion || "—"}
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  )
+                )}
               </div>
             ))
           )}
