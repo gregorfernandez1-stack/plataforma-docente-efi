@@ -270,7 +270,13 @@ export default function NuevaPlanificacion() {
     <main className="flex min-h-screen bg-[#F5F7FA] font-sans">
       <aside className="w-[260px] bg-[#1E6091] text-white p-6 flex flex-col justify-between">
         <div>
-          <h2 className="text-2xl font-bold mb-10">Docente</h2>
+          <h2 className="text-2xl font-bold mb-2">
+  Docente
+</h2>
+
+<p className="text-white/70 text-sm mb-8">
+  Educación Física por Competencia
+</p>
 
           <nav className="flex flex-col gap-3">
             <Link
@@ -316,12 +322,12 @@ export default function NuevaPlanificacion() {
           <div className="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <h1 className="text-3xl font-bold text-[#1E6091]">
-                Planificación de Unidad
-              </h1>
-              <p className="text-gray-700 mt-2">
-                El nombre del docente y el centro se cargan desde el perfil
-                autorizado.
-              </p>
+  Sistema de Planificación en Educación Física por Competencia
+</h1>
+
+<p className="text-gray-700 mt-2">
+  Crea y organiza tus planificaciones por competencias, temas y secuencias.
+</p>
             </div>
 
             <Link
@@ -611,8 +617,8 @@ export default function NuevaPlanificacion() {
                         Situación de aprendizaje
                       </h2>
                       <p className="text-sm text-gray-700 mt-1">
-                        Puedes generarla con IA pedagógica y editarla antes de
-                        guardar.
+                        Genera una situación alineada a competencias, contenidos,
+temas y secuencias.
                       </p>
                     </div>
 
@@ -622,7 +628,9 @@ export default function NuevaPlanificacion() {
                       disabled={!unidadData || generandoSituacion}
                       className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white px-5 py-3 rounded-lg font-bold"
                     >
-                      {generandoSituacion ? "Generando..." : "Generar con IA"}
+                      {generandoSituacion
+  ? "Generando..."
+  : "Generar situación con IA"}
                     </button>
                   </div>
 
