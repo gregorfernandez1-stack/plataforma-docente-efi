@@ -87,7 +87,10 @@ export default function LoginDocente() {
         return;
       }
 
-      mostrarMensaje("Acceso correcto. Redirigiendo al panel docente...", "success");
+      mostrarMensaje(
+  "Acceso correcto. Ingresando al Sistema de Planificación en Educación Física por Competencia...",
+  "success"
+);
       router.push("/docente");
     } catch (error) {
       mostrarMensaje("Ocurrió un error inesperado. Intenta nuevamente.", "error");
@@ -105,12 +108,16 @@ export default function LoginDocente() {
           </div>
 
           <h1 className="text-3xl font-bold text-[#1E6091] mb-3">
-            Ingreso Docente
-          </h1>
+  Ingreso Docente
+</h1>
 
-          <p className="text-gray-600">
-            Accede solo si tu cuenta fue autorizada por el administrador.
-          </p>
+<p className="text-gray-600">
+  Accede al Sistema de Planificación en Educación Física por Competencia.
+</p>
+
+<p className="text-sm text-gray-500 mt-2">
+  Ingresa para gestionar planificaciones, unidades, temas y secuencias.
+</p>
         </div>
 
         {mensaje && (

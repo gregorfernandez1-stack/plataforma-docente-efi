@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
+import AdminSidebar from "@/components/AdminSidebar";
 
 export default function SolicitudesDocentesPage() {
   const [solicitudes, setSolicitudes] = useState<any[]>([]);
@@ -64,6 +65,17 @@ export default function SolicitudesDocentesPage() {
       setAprobando(null);
     }
   };
+return (
+<div className="min-h-screen bg-[#F5F7FA] flex">
+
+   <AdminSidebar />
+
+   <main className="ml-[170px] w-full p-6">
+      {/* contenido */}
+   </main>
+
+</div>
+)
 
   return (
     <main className="min-h-screen bg-[#F5F7FA] p-8">

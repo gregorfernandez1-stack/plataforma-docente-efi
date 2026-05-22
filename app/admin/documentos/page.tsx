@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import AdminSidebar from "@/components/AdminSidebar";
 
 export default function AdminPage() {
   const router = useRouter();
@@ -32,6 +33,17 @@ export default function AdminPage() {
     router.push("/");
   };
 
+  return (
+<div className="min-h-screen bg-[#F5F7FA] flex">
+
+   <AdminSidebar />
+
+   <main className="ml-[170px] w-full p-6">
+      {/* contenido */}
+   </main>
+
+</div>
+)
   return (
     <main className="flex min-h-screen bg-[#F5F7FA]">
       <aside className="w-[260px] bg-[#003B7A] text-white p-6">
