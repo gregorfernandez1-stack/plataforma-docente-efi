@@ -153,11 +153,12 @@ export default function UnidadesPage() {
               ) : (
                 <div className="grid gap-6">
                   {unidades.map((unidad) => {
-                    const temas = obtenerTemas(
-                      unidad.temas_nuevo || unidad.temas
-                    );
 
-                    return (
+const temas = obtenerTemas(
+   unidad.temas
+);
+
+return(
                       <section
                         key={unidad.id}
                         className="bg-white rounded-2xl shadow border border-gray-100 p-6 hover:shadow-lg transition"
