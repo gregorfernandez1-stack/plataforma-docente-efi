@@ -3,11 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
 import AdminSidebar from "@/components/AdminSidebar";
 
 export default function AdminPage() {
-  const router = useRouter();
   const [pendientes, setPendientes] = useState(0);
 
   useEffect(() => {
@@ -17,74 +15,30 @@ export default function AdminPage() {
   const cargarPendientes = async () => {
     const { count, error } = await supabase
       .from("solicitudes_docentes")
-      .select("*", { count: "exact", head: true })
+      .select("*", {
+        count: "exact",
+        head: true,
+      })
       .eq("estado", "pendiente");
 
     if (error) {
-      console.error("Error cargando solicitudes pendientes:", error);
+      console.error(
+        "Error cargando solicitudes pendientes:",
+        error
+      );
       return;
     }
 
     setPendientes(count || 0);
   };
 
-  const cerrarSesion = async () => {
-    await supabase.auth.signOut();
-    router.push("/");
-  };
-
   return (
-<div className="min-h-screen bg-[#F5F7FA] flex">
+    <div className="min-h-screen bg-[#F5F7FA] flex">
 
-   <AdminSidebar />
+      <AdminSidebar />
 
-   <main className="ml-[170px] w-full p-6">
-      {/* contenido */}
-   </main>
+      <section className="ml-[170px] flex-1 p-10">
 
-</div>
-)
-  return (
-    <main className="flex min-h-screen bg-[#F5F7FA]">
-      <aside className="w-[260px] bg-[#003B7A] text-white p-6">
-        <h2 className="text-2xl font-bold mb-8">Administrador</h2>
-
-        <nav className="grid gap-3">
-          <Link href="/admin" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold">
-            Panel principal
-          </Link>
-
-          <Link href="/admin/solicitudes" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold flex items-center justify-between">
-            <span>Solicitudes docentes</span>
-            {pendientes > 0 && (
-              <span className="bg-red-600 text-white text-xs px-2 py-1 rounded-full">
-                {pendientes}
-              </span>
-            )}
-          </Link>
-
-          <Link href="/admin/unidades" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold">
-            Unidades didácticas
-          </Link>
-
-          <Link href="/admin/documentos" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold">
-            Documentos curriculares
-          </Link>
-
-          <Link href="/" className="bg-white/15 hover:bg-white/25 px-4 py-3 rounded-lg font-bold">
-            Ir al inicio
-          </Link>
-
-          <button
-            onClick={cerrarSesion}
-            className="bg-red-600 hover:bg-red-700 px-4 py-3 rounded-lg font-bold mt-2"
-          >
-            Cerrar sesión
-          </button>
-        </nav>
-      </aside>
-
-      <section className="flex-1 p-10">
         <div className="bg-white rounded-2xl shadow p-8 mb-8 border border-gray-100">
           <h1 className="text-4xl font-extrabold text-[#003B7A]">
             Panel de Administrador
@@ -92,17 +46,22 @@ export default function AdminPage() {
 
           <p className="text-gray-600 mt-3 max-w-3xl">
             Administra el Sistema de Planificación en Educación Física por
-            Competencia. Desde aquí puedes aprobar docentes, organizar unidades,
-            temas, secuencias y documentos curriculares.
+            Competencia. Desde aquí puedes aprobar docentes, organizar
+            unidades, temas, secuencias y documentos curriculares.
           </p>
         </div>
 
         <div className="grid md:grid-cols-3 gap-6 mb-8">
+
           <div className="bg-white rounded-2xl shadow p-6 border">
-            <p className="text-gray-500 text-sm font-semibold">Módulo activo</p>
+            <p className="text-gray-500 text-sm font-semibold">
+              Módulo activo
+            </p>
+
             <h2 className="text-2xl font-extrabold text-[#003B7A] mt-2">
               Biblioteca curricular
             </h2>
+
             <p className="text-gray-600 text-sm mt-2">
               Administra unidades didácticas, temas, secuencias y documentos.
             </p>
@@ -112,27 +71,38 @@ export default function AdminPage() {
             <p className="text-gray-500 text-sm font-semibold">
               Solicitudes pendientes
             </p>
+
             <h2 className="text-3xl font-extrabold text-red-600 mt-2">
               {pendientes}
             </h2>
+
             <p className="text-gray-600 text-sm mt-2">
               Docentes esperando aprobación.
             </p>
           </div>
 
           <div className="bg-white rounded-2xl shadow p-6 border">
-            <p className="text-gray-500 text-sm font-semibold">Acceso</p>
+            <p className="text-gray-500 text-sm font-semibold">
+              Acceso
+            </p>
+
             <h2 className="text-2xl font-extrabold text-[#003B7A] mt-2">
               Administrador
             </h2>
+
             <p className="text-gray-600 text-sm mt-2">
               Gestión general del sistema.
             </p>
           </div>
+
         </div>
 
         <div className="grid md:grid-cols-3 gap-6">
-          <Link href="/admin/solicitudes" className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition">
+
+          <Link
+            href="/admin/solicitudes"
+            className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition"
+          >
             <div className="w-14 h-14 bg-yellow-100 rounded-xl flex items-center justify-center mb-5">
               <span className="text-2xl">🧑‍🏫</span>
             </div>
@@ -150,7 +120,11 @@ export default function AdminPage() {
             </span>
           </Link>
 
-          <Link href="/admin/unidades" className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition">
+
+          <Link
+            href="/admin/unidades"
+            className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition"
+          >
             <div className="w-14 h-14 bg-[#003B7A]/10 rounded-xl flex items-center justify-center mb-5">
               <span className="text-2xl">📚</span>
             </div>
@@ -168,7 +142,11 @@ export default function AdminPage() {
             </span>
           </Link>
 
-          <Link href="/admin/documentos" className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition">
+
+          <Link
+            href="/admin/documentos"
+            className="bg-white rounded-2xl shadow p-8 border hover:shadow-xl transition"
+          >
             <div className="w-14 h-14 bg-green-100 rounded-xl flex items-center justify-center mb-5">
               <span className="text-2xl">📄</span>
             </div>
@@ -178,15 +156,19 @@ export default function AdminPage() {
             </h3>
 
             <p className="text-gray-600 mt-2">
-              Subir diseño curricular, ordenanzas, guías, calendario y normativas.
+              Subir diseño curricular, ordenanzas, guías didácticas,
+              calendario y normativas.
             </p>
 
             <span className="inline-block mt-5 bg-[#003B7A] text-white px-5 py-3 rounded-xl font-bold">
               Gestionar documentos
             </span>
           </Link>
+
         </div>
+
       </section>
-    </main>
+
+    </div>
   );
 }

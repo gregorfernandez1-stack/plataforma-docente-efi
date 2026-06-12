@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import { generarSituacionAprendizaje } from "@/lib/generarSituacionAprendizaje";
 
 export default function NuevaPlanificacion() {
   const router = useRouter();
@@ -19,6 +20,9 @@ export default function NuevaPlanificacion() {
   const [fecha, setFecha] = useState("");
   const [unidadSeleccionada, setUnidadSeleccionada] = useState("");
   const [situacion, setSituacion] = useState("");
+  const [necesidadObservada, setNecesidadObservada] = useState(
+    "fortalecer la participación activa"
+  );
   const [generandoSituacion, setGenerandoSituacion] = useState(false);
 
   const [unidadesDelGrado, setUnidadesDelGrado] = useState<any[]>([]);
@@ -34,7 +38,6 @@ export default function NuevaPlanificacion() {
 
   const limpiarLista = (valor: any): string[] => {
     if (!valor) return [];
-
     if (Array.isArray(valor)) return valor;
 
     if (typeof valor === "string") {
@@ -56,13 +59,14 @@ export default function NuevaPlanificacion() {
   };
 
   const obtenerTemas = () => {
-    if (!unidadData?.temas_nuevo) return [];
+    const valor = unidadData?.temas || unidadData?.temas_nuevo;
 
-    if (Array.isArray(unidadData.temas_nuevo)) return unidadData.temas_nuevo;
+    if (!valor) return [];
+    if (Array.isArray(valor)) return valor;
 
-    if (typeof unidadData.temas_nuevo === "string") {
+    if (typeof valor === "string") {
       try {
-        const parsed = JSON.parse(unidadData.temas_nuevo);
+        const parsed = JSON.parse(valor);
 
         if (typeof parsed === "string") {
           return JSON.parse(parsed);
@@ -162,7 +166,9 @@ export default function NuevaPlanificacion() {
     router.push("/");
   };
 
-  const generarSituacionConIA = async () => {
+  const generarSituacionConIA = (
+    modo: "base" | "regenerar" = "base"
+  ) => {
     if (!nivel || !grado || !unidadSeleccionada || !unidadData) {
       alert("Primero selecciona nivel, grado y unidad.");
       return "";
@@ -170,52 +176,28 @@ export default function NuevaPlanificacion() {
 
     setGenerandoSituacion(true);
 
-    try {
-      const res = await fetch("/api/ia/generar-situacion", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          nivel,
-          grado,
-          unidad: unidadData.titulo || unidadData.unidad || "",
-          centro,
-          docente,
-          ejeTransversal: unidadData.eje_transversal || "",
-          estrategias: unidadData.estrategias || "",
-          competencias: unidadData.competencias_especificas || "",
-          indicadores: unidadData.indicadores_logro || "",
-          contenidos: {
-            conceptual: unidadData.contenidos_conceptuales || "",
-            procedimental: unidadData.contenidos_procedimentales || "",
-            actitudinal: unidadData.contenidos_actitudinales || "",
-          },
-          temas: temasUnidad,
-        }),
-      });
+    const resultado = generarSituacionAprendizaje({
+      nivel,
+      grado,
+      unidad: unidadData.titulo || unidadData.unidad || "",
+      tema: temasUnidad?.[0]?.tema || "el contenido trabajado",
+      necesidad: necesidadObservada,
+      eje_transversal: unidadData.eje_transversal || "",
+      estrategias: unidadData.estrategias || "",
+      competencias_especificas: unidadData.competencias_especificas || "",
+      indicadores: unidadData.indicadores_logro || "",
+      contenidos: {
+        conceptual: unidadData.contenidos_conceptuales || "",
+        procedimental: unidadData.contenidos_procedimentales || "",
+        actitudinal: unidadData.contenidos_actitudinales || "",
+      },
+      modo,
+    });
 
-      const data = await res.json();
+    setSituacion(resultado.situacion_completa);
+    setGenerandoSituacion(false);
 
-      if (!res.ok) {
-        alert(data.error || "Error generando la situación con IA.");
-        return "";
-      }
-
-      if (data.texto) {
-        setSituacion(data.texto);
-        return data.texto;
-      }
-
-      alert("No se pudo generar la situación.");
-      return "";
-    } catch (error) {
-      console.error(error);
-      alert("Ocurrió un error al conectar con la IA.");
-      return "";
-    } finally {
-      setGenerandoSituacion(false);
-    }
+    return resultado.situacion_completa;
   };
 
   const guardarPlanificacion = async () => {
@@ -306,10 +288,7 @@ export default function NuevaPlanificacion() {
           </p>
 
           <nav className="flex flex-col gap-3">
-            <Link
-              href="/docente"
-              className="hover:bg-[#144d74] px-4 py-2 rounded-lg"
-            >
+            <Link href="/docente" className="hover:bg-[#144d74] px-4 py-2 rounded-lg">
               Panel
             </Link>
 
@@ -546,9 +525,7 @@ export default function NuevaPlanificacion() {
                   <h3 className="font-bold text-[#1E6091] mb-2">
                     Eje transversal
                   </h3>
-                  <p className="text-gray-700">
-                    {unidadData.eje_transversal}
-                  </p>
+                  <p className="text-gray-700">{unidadData.eje_transversal}</p>
                 </div>
 
                 <div>
@@ -641,7 +618,7 @@ export default function NuevaPlanificacion() {
                 </div>
 
                 <div className="border border-[#BFDCEB] rounded-2xl p-6 bg-[#EAF4FB]">
-                  <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+                  <div className="flex flex-col gap-4 mb-4">
                     <div>
                       <h2 className="text-xl font-bold text-[#1E6091]">
                         Situación de aprendizaje
@@ -649,20 +626,72 @@ export default function NuevaPlanificacion() {
 
                       <p className="text-sm text-gray-700 mt-1">
                         Genera una situación alineada a competencias,
-                        contenidos, temas y secuencias.
+                        contenidos, temas y secuencias. Luego puedes editarla
+                        manualmente antes de guardar.
                       </p>
                     </div>
 
-                    <button
-                      type="button"
-                      onClick={generarSituacionConIA}
-                      disabled={!unidadData || generandoSituacion}
-                      className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white px-5 py-3 rounded-lg font-bold"
-                    >
-                      {generandoSituacion
-                        ? "Generando..."
-                        : "Generar situación con IA"}
-                    </button>
+                    <div className="flex flex-col md:flex-row md:items-end gap-3">
+                      <div className="flex-1">
+                        <label className="block text-sm font-bold text-[#1E6091] mb-2">
+                          Necesidad observada
+                        </label>
+
+                        <select
+                          value={necesidadObservada}
+                          onChange={(e) =>
+                            setNecesidadObservada(e.target.value)
+                          }
+                          className="border p-3 rounded-lg w-full bg-white"
+                        >
+                          <option value="fortalecer la participación activa">
+                            Baja participación
+                          </option>
+
+                          <option value="mejorar la convivencia durante las actividades físicas">
+                            Problemas de convivencia
+                          </option>
+
+                          <option value="fortalecer la coordinación y el control corporal">
+                            Dificultades motrices
+                          </option>
+
+                          <option value="promover hábitos saludables y cuidado del cuerpo">
+                            Hábitos saludables
+                          </option>
+
+                          <option value="mejorar el trabajo colaborativo">
+                            Trabajo colaborativo
+                          </option>
+
+                          <option value="prepararse para una actividad recreativa o deportiva del centro">
+                            Actividad recreativa o deportiva
+                          </option>
+                        </select>
+                      </div>
+
+                      <div className="flex flex-wrap gap-3">
+                        <button
+                          type="button"
+                          onClick={() => generarSituacionConIA("base")}
+                          disabled={!unidadData || generandoSituacion}
+                          className="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white px-5 py-3 rounded-lg font-bold"
+                        >
+                          {generandoSituacion
+                            ? "Generando..."
+                            : "Generar propuesta"}
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => generarSituacionConIA("regenerar")}
+                          disabled={!unidadData || generandoSituacion}
+                          className="bg-[#1E6091] hover:bg-[#144d74] disabled:bg-gray-400 text-white px-5 py-3 rounded-lg font-bold"
+                        >
+                          Regenerar
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
                   <textarea
@@ -670,7 +699,7 @@ export default function NuevaPlanificacion() {
                     onChange={(e) => setSituacion(e.target.value)}
                     rows={8}
                     className="w-full border p-4 rounded-lg bg-white"
-                    placeholder="Puedes redactar manualmente o generar una situación con IA..."
+                    placeholder="Puedes redactar manualmente o generar una propuesta..."
                   />
                 </div>
 
@@ -703,6 +732,7 @@ export default function NuevaPlanificacion() {
                                 >
                                   <h4 className="font-bold text-[#1E6091] mb-3">
                                     {secuencia.titulo ||
+                                      secuencia ||
                                       `Secuencia ${secIndex + 1}`}
                                   </h4>
 
@@ -719,54 +749,6 @@ export default function NuevaPlanificacion() {
                                       unidadData.estrategias ||
                                       "No registrado"}
                                   </p>
-
-                                  <div className="grid md:grid-cols-3 gap-4">
-                                    <Momento
-                                      titulo="Inicio"
-                                      datos={secuencia.inicio}
-                                    />
-
-                                    <Momento
-                                      titulo="Desarrollo"
-                                      datos={secuencia.desarrollo}
-                                    />
-
-                                    <Momento
-                                      titulo="Cierre"
-                                      datos={secuencia.cierre}
-                                    />
-                                  </div>
-
-                                  <div className="grid md:grid-cols-2 gap-4 mt-4">
-                                    <div className="bg-white border rounded-lg p-4">
-                                      <h5 className="font-bold text-gray-800 mb-2">
-                                        Evaluación
-                                      </h5>
-
-                                      <p>
-                                        <strong>Técnica:</strong>{" "}
-                                        {secuencia.evaluacion?.tecnica ||
-                                          "No registrado"}
-                                      </p>
-
-                                      <p>
-                                        <strong>Instrumento:</strong>{" "}
-                                        {secuencia.evaluacion?.instrumento ||
-                                          "No registrado"}
-                                      </p>
-                                    </div>
-
-                                    <div className="bg-white border rounded-lg p-4">
-                                      <h5 className="font-bold text-gray-800 mb-2">
-                                        Acomodación curricular
-                                      </h5>
-
-                                      <p>
-                                        {secuencia.acomodacion ||
-                                          "No registrada"}
-                                      </p>
-                                    </div>
-                                  </div>
                                 </div>
                               )
                             )}
@@ -798,35 +780,5 @@ export default function NuevaPlanificacion() {
         </div>
       </section>
     </main>
-  );
-}
-
-function Momento({ titulo, datos }: { titulo: string; datos: any }) {
-  return (
-    <div className="bg-white border rounded-lg p-4">
-      <h5 className="font-bold text-gray-800 mb-2">{titulo}</h5>
-
-      <p>
-        <strong>Tiempo:</strong> {datos?.tiempo || "No registrado"} min
-      </p>
-
-      <p>
-        <strong>Actividades:</strong>{" "}
-        {datos?.actividades || "No registrado"}
-      </p>
-
-      <p>
-        <strong>Evidencia:</strong> {datos?.evidencia || "No registrada"}
-      </p>
-
-      <p>
-        <strong>Metacognición:</strong>{" "}
-        {datos?.metacognicion || "No registrada"}
-      </p>
-
-      <p>
-        <strong>Recursos:</strong> {datos?.recursos || "No registrados"}
-      </p>
-    </div>
   );
 }
