@@ -298,12 +298,12 @@ required
 Seleccionar grado
 </option>
 
-<option>1ro.</option>
-<option>2do.</option>
-<option>3ro.</option>
-<option>4to.</option>
-<option>5to.</option>
-<option>6to.</option>
+<option value="1">1ro.</option>
+<option value="2">2do.</option>
+<option value="3">3ro.</option>
+<option value="4">4to.</option>
+<option value="5">5to.</option>
+<option value="6">6to.</option>
 
 </select>
 

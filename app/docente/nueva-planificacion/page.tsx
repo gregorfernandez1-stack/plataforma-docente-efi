@@ -720,20 +720,30 @@ export default function NuevaPlanificacion() {
                           className="border rounded-xl overflow-hidden"
                         >
                           <div className="bg-blue-50 px-4 py-3 font-bold text-[#1E6091]">
-                            Tema {temaIndex + 1}: {tema.tema}
+                           Tema {temaIndex + 1}:{" "}
+{typeof tema === "string"
+  ? tema
+  : tema.tema || tema.nombre || "Tema sin título"}
                           </div>
 
                           <div className="p-4 space-y-4">
-                            {tema.secuencias?.map(
-                              (secuencia: any, secIndex: number) => (
+                           {(Array.isArray(tema?.secuencias)
+  ? tema.secuencias
+  : Array.isArray(tema?.actividades)
+  ? tema.actividades
+  : []
+).map((secuencia: any, secIndex: number) => (
                                 <div
                                   key={secIndex}
                                   className="bg-gray-50 border rounded-xl p-4"
                                 >
                                   <h4 className="font-bold text-[#1E6091] mb-3">
-                                    {secuencia.titulo ||
-                                      secuencia ||
-                                      `Secuencia ${secIndex + 1}`}
+                                   {typeof secuencia === "string"
+  ? secuencia
+  : secuencia.titulo ||
+    secuencia.nombre ||
+    secuencia.actividad ||
+    `Secuencia ${secIndex + 1}`}
                                   </h4>
 
                                   {secuencia.intencion_pedagogica && (
