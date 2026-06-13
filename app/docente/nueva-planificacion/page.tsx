@@ -257,7 +257,21 @@ export default function NuevaPlanificacion() {
           procedimental: unidadData.contenidos_procedimentales || "",
           actitudinal: unidadData.contenidos_actitudinales || "",
         },
-        secuencias: temasUnidad,
+        secuencias: temasUnidad
+  .map((tema: any) => ({
+    tema:
+      typeof tema === "string"
+        ? tema
+        : tema.tema || tema.nombre || "Sin tema",
+
+    secuencias: Array.isArray(tema?.secuencias)
+      ? tema.secuencias
+      : Array.isArray(tema?.actividades)
+      ? tema.actividades
+      : [],
+  }))
+  .filter((tema: any) => tema.tema !== "Sin tema" || tema.secuencias.length > 0),
+  
       },
     ]);
 
