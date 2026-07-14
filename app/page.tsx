@@ -10,19 +10,13 @@ export default function Home() {
 
         {/* LOGOS */}
         <header className="flex justify-start mb-10 md:mb-14">
-          <div className="flex items-center gap-6 bg-white px-6 py-4 rounded-2xl shadow-sm border border-gray-200">
-            <img
-              src="/logos/inefi.png"
-              alt="INEFI"
-              className="h-16 md:h-20 object-contain"
-            />
-
-            <img
-              src="/logos/minerd.png"
-              alt="MINERD"
-              className="h-16 md:h-20 object-contain"
-            />
-          </div>
+   <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-5 w-fit">
+  <img
+    src="/logos/logotuplanefi.png"
+    alt="Sistema de Planificación en Educación Física por Competencia"
+    className="max-w-[650px] w-full h-auto object-contain"
+  />
+</div>
         </header>
 
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-14 items-center">
